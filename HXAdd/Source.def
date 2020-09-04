@@ -1,0 +1,3 @@
+LIBRARY HXAdd
+EXPORTS
+	HXAddFunc
