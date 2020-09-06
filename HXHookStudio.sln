@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXHookMainDlg", "HXHookMainDlg\HXHookMainDlg.vcxproj", "{FC129CA2-B976-4425-9E27-88214DFFE008}"
 EndProject
@@ -9,9 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXAdd", "HXAdd\HXAdd.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXHookDll", "HXHookDll\HXHookDll.vcxproj", "{6B72FA38-7330-4472-B1AA-29C58B5B212B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXInjectionTaskManage", "HXInjectionTaskManage\HXInjectionTaskManage.vcxproj", "{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXSpy", "HXSpy\HXSpy.vcxproj", "{C0A01635-6411-4B35-8376-BFFC8C215DF6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXInjectionGetMessage", "HXInjectionGetMessage\HXInjectionGetMessage.vcxproj", "{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,14 +45,6 @@ Global
 		{6B72FA38-7330-4472-B1AA-29C58B5B212B}.Release|x64.Build.0 = Release|x64
 		{6B72FA38-7330-4472-B1AA-29C58B5B212B}.Release|x86.ActiveCfg = Release|Win32
 		{6B72FA38-7330-4472-B1AA-29C58B5B212B}.Release|x86.Build.0 = Release|Win32
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Debug|x64.ActiveCfg = Debug|x64
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Debug|x64.Build.0 = Debug|x64
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Debug|x86.ActiveCfg = Debug|Win32
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Debug|x86.Build.0 = Debug|Win32
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Release|x64.ActiveCfg = Release|x64
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Release|x64.Build.0 = Release|x64
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Release|x86.ActiveCfg = Release|Win32
-		{2F9B299D-0A3B-4EF0-83D3-AADD7E361122}.Release|x86.Build.0 = Release|Win32
 		{C0A01635-6411-4B35-8376-BFFC8C215DF6}.Debug|x64.ActiveCfg = Debug|x64
 		{C0A01635-6411-4B35-8376-BFFC8C215DF6}.Debug|x64.Build.0 = Debug|x64
 		{C0A01635-6411-4B35-8376-BFFC8C215DF6}.Debug|x86.ActiveCfg = Debug|Win32
@@ -61,6 +53,14 @@ Global
 		{C0A01635-6411-4B35-8376-BFFC8C215DF6}.Release|x64.Build.0 = Release|x64
 		{C0A01635-6411-4B35-8376-BFFC8C215DF6}.Release|x86.ActiveCfg = Release|Win32
 		{C0A01635-6411-4B35-8376-BFFC8C215DF6}.Release|x86.Build.0 = Release|Win32
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Debug|x64.ActiveCfg = Debug|x64
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Debug|x64.Build.0 = Debug|x64
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Debug|x86.ActiveCfg = Debug|Win32
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Debug|x86.Build.0 = Debug|Win32
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Release|x64.ActiveCfg = Release|x64
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Release|x64.Build.0 = Release|x64
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Release|x86.ActiveCfg = Release|Win32
+		{A00EFD29-2D46-409D-95BB-0CAFBC7D4D96}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

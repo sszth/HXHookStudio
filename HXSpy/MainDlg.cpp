@@ -4,10 +4,11 @@
 
 #include "stdafx.h"
 #include "resource.h"
-
+#include <algorithm>
 #include <atlstr.h>
-#include <TlHelp32.h>         //声明快照函数的头文件
 #include "aboutdlg.h"
+#include "CHXSpyManage.h"
+#include "CHXMessageShowDlg.h"
 #include "MainDlg.h"
 
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
@@ -37,11 +38,55 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	ATLASSERT(pLoop != NULL);
 	pLoop->AddMessageFilter(this);
 	pLoop->AddIdleHandler(this);
-
 	UIAddChildWindowContainer(m_hWnd);
 
-	m_listThread.SubclassWindow(this->GetDlgItem(IDC_THREAD_LIST));
+	m_listThread = this->GetDlgItem(IDC_THREAD_LIST);
+	DWORD dwStyle;
+	dwStyle = m_listThread.GetStyle();
+	dwStyle |= LVS_SINGLESEL;
+	m_listThread.ModifyStyle(0, dwStyle);
+	dwStyle = m_listThread.GetExStyle();
+	dwStyle |= LVS_EX_FULLROWSELECT | LVIS_SELECTED;
+	m_listThread.ModifyStyleEx(0, dwStyle);
 
+
+	dwStyle = m_listThread.GetStyle();
+
+	SetRedraw(FALSE);
+	RECT rcList;
+	m_listThread.GetClientRect(&rcList);
+
+	int width = rcList.right - rcList.left;
+	int columnWidth = 0;
+	int remainingWidth = width;
+
+	// NOTE: We'll take the default sort type (LVCOLSORT_TEXT)
+	// for the "Name" and "Folder" columns.
+	// LVCOLSORT_TEXT uses lstrcmp, which uses the currently
+	// selected user locale for sorting. This matches the sorting
+	// in the file list in Windows Explorer. With lstrcmp:
+	//    "a" < "A" and "A" < "b" and "b" < "B"
+	// By comparison, with _tcscmp the sort order is in "ASCII" order:
+	//    "A" < "a" and "Z" < "a"
+	// LVCOLSORT_TEXTNOCASE uses lstrcmpi, which sorts:
+	//    "a" == "A" and "A" < "b" and "b" == "B"
+
+	columnWidth = ::MulDiv(width, 20, 100);  // 20%
+	m_listThread.InsertColumn(ListColumn_ThreadName, _T("Name"), LVCFMT_LEFT, columnWidth, ListColumn_ThreadName);
+	m_listThread.InsertColumn(ListColumn_Pid, _T("Pid"), LVCFMT_LEFT, columnWidth, ListColumn_Pid);
+
+
+	//////先删除同名进程
+	//PROCESSENTRY32 proc;
+	//THREADENTRY32 thread;
+	//HANDLE hthSnapshot = NULL;
+	//BOOL theloop;
+	DWORD dwCurrentProcessId = GetCurrentProcessId();//当前进程id
+	CHXSpyManage::GetInstance()->Init();
+	MapProcess mapProcess = CHXSpyManage::GetInstance()->GetProcess();
+	HXSpyProcessAdd add(dwCurrentProcessId, &m_listThread, 0);
+	std::for_each(mapProcess.begin(), mapProcess.end(), add);
+	SetRedraw(TRUE);
 	return TRUE;
 }
 
@@ -67,6 +112,10 @@ LRESULT CMainDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /
 {
 	// TODO: Add validation code 
 	CloseDialog(wID);
+
+	
+	//CHXMessageShowDlg dlg;
+	//dlg.DoModal();
 	return 0;
 }
 
@@ -76,191 +125,97 @@ LRESULT CMainDlg::OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOO
 	return 0;
 }
 
+LRESULT CMainDlg::OnLVColumnClick(int, LPNMHDR pnmh, BOOL&)
+{
+	return LRESULT();
+}
+
+LRESULT CMainDlg::OnInitMessageHook(WORD, WORD wID, HWND, BOOL&)
+{
+	LVITEM lvi = {};
+	BSTR szStr = nullptr;
+	m_listThread.GetSelectedItem(&lvi);
+	//GetDlgItemInt
+	m_listThread.GetItemText(lvi.iItem, ListColumn_Pid, szStr);
+	int nProcessId = _ttoi(szStr);
+	CHXMessageShowDlg dlg(nProcessId);
+	dlg.DoModal();
+
+	//LPLVITEMW lp = new LVITEMW();
+	//m_listThread.GetSelectedItem();
+	//m_listThread.getitem
+	//CHXMessageShowDlg dlg;
+	//dlg.DoModal();
+	return LRESULT();
+}
+
+LRESULT CMainDlg::OnNMRClick(int, LPNMHDR pnmh, BOOL&)
+{
+	POINT pos = { 0, 0 };
+	::GetCursorPos(&pos);
+	POINT ptClient = pos;
+	if (pnmh->hwndFrom != NULL)
+		::ScreenToClient(pnmh->hwndFrom, &ptClient);
+
+	if (pnmh->hwndFrom == m_listThread.m_hWnd)
+	{
+		CMenu menu;
+		menu.LoadMenu(IDR_MENU1);
+		CMenu SubMenu(menu.GetSubMenu(0));
+		SubMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, pos.x, pos.y, this->m_hWnd);
+		SubMenu.DestroyMenu();
+		menu.DestroyMenu();
+
+		//LVHITTESTINFO lvhti = { 0 };
+		//lvhti.pt = ptClient;
+		//m_listThread.HitTest(&lvhti);
+		//if ((lvhti.flags & LVHT_ONITEMLABEL) != 0)
+		//{
+		//	LVITEM lvi = { 0 };
+		//	lvi.mask = LVIF_PARAM;
+		//	lvi.iItem = lvhti.iItem;
+		//	if (m_listThread.GetItem(&lvi) != FALSE)
+		//	{
+		//		CMenu menu;
+		//		menu.LoadMenu(IDR_MENU1);
+		//		CMenuHandle menuPopup = menu.GetSubMenu(0);
+		//		m_CmdBar.TrackPopupMenu(menuPopup, TPM_RIGHTBUTTON | TPM_VERTICAL, pt.x, pt.y);
+		//	}
+		//}
+	}
+
+	return 0L;
+}
+
 void CMainDlg::CloseDialog(int nVal)
 {
 	DestroyWindow();
 	::PostQuitMessage(nVal);
 }
 
-LRESULT CHXThreadListViewCtrl::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
+
+
+HXSpyProcessAdd::HXSpyProcessAdd(DWORD dwCurrentID, CListViewCtrl* list, int nCurrentListItem)
 {
-	LRESULT result = DefWindowProc();
-	if (result == S_FALSE)
+	m_dwCurrentID = dwCurrentID;
+	m_nCurrentListItem = nCurrentListItem;
+	m_ListCurrent = list;
+}
+
+void HXSpyProcessAdd::operator()(std::pair<DWORD, PROCESSENTRY32> iter)
+{
+	if (!m_ListCurrent)
 	{
-		return S_FALSE;
+		ATLASSERT(0);
+		return;
 	}
-
-	this->Initialize();
-	return result;
-}
-
-LRESULT CHXThreadListViewCtrl::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
-{
-	return S_OK;
-}
-
-LRESULT CHXThreadListViewCtrl::OnContextMenu(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
-{
-	bHandled = TRUE;
-
-	int indexSelectedNearMenu = -1;
-
-	POINT ptPopup = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-	if (ptPopup.x == -1 && ptPopup.y == -1)
+	if (iter.first != m_dwCurrentID)
 	{
-		// They used the context menu key or Shift-F10 to bring up the context menu
-		indexSelectedNearMenu = this->GetNextItem(-1, LVNI_SELECTED);
-		RECT rect = { 0 };
-		if (indexSelectedNearMenu >= 0)
-		{
-			// If there is a selected item, popup the menu under the first selected item,
-			// if not, pop it up in the top left of the list view
-			this->GetItemRect(indexSelectedNearMenu, &rect, LVIR_BOUNDS);
-			::MapWindowPoints(m_hWnd, NULL, (LPPOINT)&rect, 2);
-			ptPopup.x = rect.left;
-			ptPopup.y = rect.bottom;
-		}
+		m_ListCurrent->InsertItem(m_nCurrentListItem, iter.second.szExeFile);
+		CString strPid;
+		strPid.Format(_T("%d"), iter.second.th32ProcessID);
+		m_ListCurrent->SetItemText(m_nCurrentListItem, ListColumn_Pid, strPid);
+		m_nCurrentListItem++;
 	}
-	else
-	{
-		POINT ptClient = ptPopup;
-		::MapWindowPoints(NULL, m_hWnd, &ptClient, 1);
-
-		LVHITTESTINFO hti = { 0 };
-		hti.pt = ptClient;
-		indexSelectedNearMenu = this->HitTest(&hti);
-	}
-
-	if (indexSelectedNearMenu > 0)
-	{
-		// TODO: Handle multiple selection
-		this->GetItemData(indexSelectedNearMenu);
-
-		// Build up the menu to show
-		//CMenu mnuContext;
-		//if(mnuContext.CreatePopupMenu())
-		//{
-		//}
-	}
-
-	return S_OK;
 }
 
-void CHXThreadListViewCtrl::Initialize(void)
-{
-	this->InitializeListColumns();
-}
-
-void CHXThreadListViewCtrl::InitializeListColumns(void)
-{
-	SetRedraw(FALSE);
-	RECT rcList;
-	this->GetClientRect(&rcList);
-
-	int width = rcList.right - rcList.left;
-	int columnWidth = 0;
-	int remainingWidth = width;
-
-	// NOTE: We'll take the default sort type (LVCOLSORT_TEXT)
-	// for the "Name" and "Folder" columns.
-	// LVCOLSORT_TEXT uses lstrcmp, which uses the currently
-	// selected user locale for sorting. This matches the sorting
-	// in the file list in Windows Explorer. With lstrcmp:
-	//    "a" < "A" and "A" < "b" and "b" < "B"
-	// By comparison, with _tcscmp the sort order is in "ASCII" order:
-	//    "A" < "a" and "Z" < "a"
-	// LVCOLSORT_TEXTNOCASE uses lstrcmpi, which sorts:
-	//    "a" == "A" and "A" < "b" and "b" == "B"
-
-	columnWidth = ::MulDiv(width, 20, 100);  // 20%
-	this->InsertColumn(ListColumn_ThreadName, _T("Name"), LVCFMT_LEFT, columnWidth, ListColumn_ThreadName);
-	this->InsertColumn(ListColumn_Pid, _T("Pid"), LVCFMT_LEFT, columnWidth, ListColumn_Pid);
-	////先删除同名进程
-	PROCESSENTRY32 proc;
-	THREADENTRY32 thread;
-	HANDLE snap = NULL;
-	BOOL theloop;
-	DWORD dwCurrentProcessId = GetCurrentProcessId();//当前进程id
-
-	snap = CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0); //获取进程快照句柄
-	proc.dwSize = sizeof(PROCESSENTRY32);
-	theloop = Process32First(snap, &proc); //查找第一个进程
-	int nItem = 0;
-	while (theloop)
-	{
-		if (dwCurrentProcessId != proc.th32ProcessID)
-		{
-			InsertItem(nItem, proc.szExeFile);
-			CString strPid;
-			strPid.Format(_T("%d"), proc.th32ProcessID);
-			SetItemText(nItem, ListColumn_Pid, strPid);	
-			nItem++;
-		}
-		//	HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, proc.th32ProcessID);
-		//	if (hProcess)
-		//	{
-		//		TerminateProcess(hProcess, 0);
-		//		CloseHandle(hProcess);
-		//		hProcess = NULL;
-		//	}
-		theloop = Process32Next(snap, &proc); //查找下一个进程
-	}
-	SetRedraw(TRUE);
-}
-
-void CHXThreadListViewCtrl::Uninitialize(void)
-{
-}
-
-BOOL CHXThreadListViewCtrl::SubclassWindow(HWND hWnd)
-{
-	ATLASSERT(m_hWnd == NULL);
-	ATLASSERT(::IsWindow(hWnd));
-	BOOL returnValue = baseClass::SubclassWindow(hWnd);
-	if (returnValue)
-	{
-		this->Initialize();
-	}
-	return returnValue;
-}
-
-HWND CHXThreadListViewCtrl::UnsubclassWindow(BOOL bForce)
-{
-	this->Uninitialize();
-
-	return baseClass::UnsubclassWindow(bForce);
-}
-
-int CHXThreadListViewCtrl::CompareItemsCustom(LVCompareParam * pItem1, LVCompareParam * pItem2, int iSortCol)
-{
-	int result = 0;
-
-	// Deal with all of the custom sort columns
-	switch (iSortCol)
-	{
-	case ListColumn_Pid:
-	{
-		// Sort based on ListColumn_SizeBytes
-
-		// NOTE: There's other ways to use a "proxy column" for sorting, this is just one
-		//  (mainly, just to give an example of CompareItemsCustom).
-		//  Another way would be to have DoSortItems run on the hidden column,
-		//  but then SetSortColumn for the visible column.
-
-		CString sizeInBytesLHS, sizeInBytesRHS;
-		this->GetItemText(pItem1->iItem, ListColumn_Pid, *(BSTR*)(&sizeInBytesLHS));
-		this->GetItemText(pItem2->iItem, ListColumn_Pid, *(BSTR*)(&sizeInBytesRHS));
-
-		__int64 difference = _ttoi64(sizeInBytesRHS) - _ttoi64(sizeInBytesLHS);
-		if (difference < 0)
-			result = 1;
-		else if (difference > 0)
-			result = -1;
-		else
-			result = 0;
-	}
-	break;
-	}
-
-	return result;
-}
