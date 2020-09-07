@@ -132,12 +132,29 @@ LRESULT CMainDlg::OnLVColumnClick(int, LPNMHDR pnmh, BOOL&)
 
 LRESULT CMainDlg::OnInitMessageHook(WORD, WORD wID, HWND, BOOL&)
 {
+	DWORD nProcessId = -1;
+#ifndef _HX_DEBUG_
 	LVITEM lvi = {};
 	BSTR szStr = nullptr;
 	m_listThread.GetSelectedItem(&lvi);
-	//GetDlgItemInt
+	if (lvi.iItem == -1)
+	{
+		return S_OK;
+	}
 	m_listThread.GetItemText(lvi.iItem, ListColumn_Pid, szStr);
-	int nProcessId = _ttoi(szStr);
+	nProcessId = _ttoi(szStr);
+#else
+	HWND pWnd = FindWindow(NULL, TEXT("Last MessageBox info"));
+	if (pWnd)
+	{
+		DWORD dwThread = GetWindowThreadProcessId(pWnd, &nProcessId);
+	}
+
+#endif // !_HX_DEBUG_
+	if (-1 == nProcessId)
+	{
+		return S_FALSE;
+	}
 	CHXMessageShowDlg dlg(nProcessId);
 	dlg.DoModal();
 

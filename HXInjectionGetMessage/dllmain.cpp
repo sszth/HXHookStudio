@@ -9,6 +9,10 @@ BOOL APIENTRY DllMain( HMODULE hInstDll,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+		//// ok open dlg success
+		//TCHAR szqq[MAX_PATH] = TEXT("hun");
+		//MessageBox(GetActiveWindow(), szqq, szqq, MB_OK);
+		//break;
         char szBuf[MAX_PATH * 100] = { 0 };
 
         PBYTE pb = NULL;

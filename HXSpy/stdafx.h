@@ -36,3 +36,4 @@ extern CAppModule _Module;
 
 #include "resource.h"
 
+#define _HX_DEBUG_

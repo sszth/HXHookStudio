@@ -5,3 +5,13 @@
 /.vs/HXHookStudio/v16
 /HXSpy/MainDlg - 副本.cpp
 /HXSpy/MainDlg - 副本.h
+/.vs
+*.obj
+x64
+Debug
+*.user
+*.tlog
+*.lastbuildstate
+*.idb
+*.pdb
+*unsuccessfulbuild
