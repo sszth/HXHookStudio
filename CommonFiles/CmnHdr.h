@@ -14,8 +14,8 @@ Purpose: Common header file containing handy macros and definitions
 
 
 // = 0x0600 for VISTA level from sdkddkver.h
-#define _WIN32_WINNT _WIN32_WINNT_LONGHORN 
-#define WINVER       _WIN32_WINNT_LONGHORN 
+//#define _WIN32_WINNT _WIN32_WINNT_LONGHORN 
+//#define WINVER       _WIN32_WINNT_LONGHORN 
 
 
 //////////////////////////// Unicode Build Option /////////////////////////////
@@ -42,6 +42,8 @@ Purpose: Common header file containing handy macros and definitions
 #pragma warning(push, 4)
 #include <CommCtrl.h>
 #include <process.h>       // For _beginthreadex
+
+#include <stdlib.h>
 
 
 ///////////// Verify that the proper header files are being used //////////////

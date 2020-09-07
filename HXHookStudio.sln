@@ -17,8 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "22-LastMsgBoxInfo", "22-Las
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "22-LastMsgBoxInfoLib", "22-LastMsgBoxInfoLib\22-LastMsgBoxInfoLib.vcxproj", "{D24E1FEF-4501-4052-A6FA-DB091249D90A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXInjectionGetMessageDlg", "HXInjectionGetMessageDlg\HXInjectionGetMessageDlg.vcxproj", "{B0880971-C3FD-44F0-9743-C98843FE2061}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -83,14 +81,6 @@ Global
 		{D24E1FEF-4501-4052-A6FA-DB091249D90A}.Release|x64.Build.0 = Release|x64
 		{D24E1FEF-4501-4052-A6FA-DB091249D90A}.Release|x86.ActiveCfg = Release|Win32
 		{D24E1FEF-4501-4052-A6FA-DB091249D90A}.Release|x86.Build.0 = Release|Win32
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Debug|x64.ActiveCfg = Debug|x64
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Debug|x64.Build.0 = Debug|x64
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Debug|x86.ActiveCfg = Debug|Win32
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Debug|x86.Build.0 = Debug|Win32
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Release|x64.ActiveCfg = Release|x64
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Release|x64.Build.0 = Release|x64
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Release|x86.ActiveCfg = Release|Win32
-		{B0880971-C3FD-44F0-9743-C98843FE2061}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
