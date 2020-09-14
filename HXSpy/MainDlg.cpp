@@ -26,6 +26,7 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 {
 	// center the dialog on the screen
 	CenterWindow();
+	SetWindowText(TEXT("123"));
 
 	// set icons
 	HICON hIcon = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON));
@@ -151,10 +152,14 @@ LRESULT CMainDlg::OnInitMessageHook(WORD, WORD wID, HWND, BOOL&)
 	}
 
 #endif // !_HX_DEBUG_
+#ifdef _HX_USE_PROCESSID_
+
 	if (-1 == nProcessId)
 	{
 		return S_FALSE;
 	}
+#endif // _HX_USE_PROCESSID_
+
 	CHXMessageShowDlg dlg(nProcessId);
 	dlg.DoModal();
 

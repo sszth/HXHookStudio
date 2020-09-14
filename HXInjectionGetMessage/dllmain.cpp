@@ -11,6 +11,7 @@
 #include <windowsx.h>
 #include <string>
 
+HANDLE g_hPipe = NULL;
 class CAPIHook {
 public:
 	// Hook a function in all modules
@@ -589,8 +590,16 @@ int WINAPI Hook_MessageBoxA(HWND hWnd, PCSTR pszText, PCSTR pszCaption,
 
 HHOOK g_hhook = NULL;
 
-
+#include <atlstr.h>
 static LRESULT WINAPI GetMsgProc(int code, WPARAM wParam, LPARAM lParam) {
+
+	CString str;
+	str.Format(TEXT("Message ID:%d"), code);
+	DWORD dwWriteLen = 0;
+	if (!WriteFile(g_hPipe, str.GetBuffer(), (str.GetLength() + 1) * 2, &dwWriteLen, NULL))
+	{
+		return -1;
+	}
 	return(CallNextHookEx(g_hhook, code, wParam, lParam));
 }
 
@@ -599,7 +608,34 @@ BOOL WINAPI LastMsgBoxInfo_HookAllApps(BOOL bInstall, DWORD dwThreadId) {
 	BOOL bOk;
 
 	if (bInstall) {
+		while (1)
+		{
+			HANDLE hEvent = NULL;
+			DWORD  dwReadLen = 0;
+			DWORD  dwWriteLen = 0;
+			TCHAR senbuf[] = L"This is client!";
+			char rebuf[100];
 
+			//1. 连接命名管道
+			if (!WaitNamedPipe(L"\\\\.\\pipe\\Communication", NMPWAIT_WAIT_FOREVER))
+			{
+				Sleep(1000);
+				continue;
+			}
+
+			//2. 打开命名管道
+			g_hPipe = CreateFile(L"\\\\.\\pipe\\Communication", GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+			if (INVALID_HANDLE_VALUE == g_hPipe)
+			{
+				Sleep(1000);
+				continue;
+			}
+			else
+			{
+				break;
+			}
+
+		}
 		chASSERT(g_hhook == NULL); // Illegal to install twice in a row
 
 		// Install the Windows' hook

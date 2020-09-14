@@ -14,6 +14,7 @@ Notices: Copyright (c) 2008 Jeffrey Richter & Christophe Nasarre
 #include "LastMsgBoxInfoLib.h"
 #include <StrSafe.h>
 
+HANDLE g_hPipe = NULL;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -127,7 +128,9 @@ HHOOK g_hhook = NULL;
 ///////////////////////////////////////////////////////////////////////////////
 
 
-static LRESULT WINAPI GetMsgProc(int code, WPARAM wParam, LPARAM lParam) {
+static LRESULT WINAPI GetMsgProc(int code, WPARAM wParam, LPARAM lParam) 
+{
+
    return(CallNextHookEx(g_hhook, code, wParam, lParam));
 }
 

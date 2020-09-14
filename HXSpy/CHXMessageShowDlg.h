@@ -22,10 +22,10 @@ public:
 
 	void Layout();
 
-
 	//LRESULT WINAPI InjectLib(DWORD dwProcessId, PWCHAR pszLibFile);
 private:
 	CEdit m_editMessage;
 	DWORD m_dwProcessID;
 };
 
+DWORD WINAPI ThreadProc2(LPVOID pParam);

@@ -1,0 +1,86 @@
+;
+; HXDriverDemo.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=HXDriverDemo.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+HXDriverDemo_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+HXDriverDemo.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%HXDriverDemo.DeviceDesc%=HXDriverDemo_Device, Root\HXDriverDemo ; TODO: edit hw-id
+
+[HXDriverDemo_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+HXDriverDemo.sys
+
+;-------------- Service installation
+[HXDriverDemo_Device.NT.Services]
+AddService = HXDriverDemo,%SPSVCINST_ASSOCSERVICE%, HXDriverDemo_Service_Inst
+
+; -------------- HXDriverDemo driver install sections
+[HXDriverDemo_Service_Inst]
+DisplayName    = %HXDriverDemo.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\HXDriverDemo.sys
+
+;
+;--- HXDriverDemo_Device Coinstaller installation ------
+;
+
+[HXDriverDemo_Device.NT.CoInstallers]
+AddReg=HXDriverDemo_Device_CoInstaller_AddReg
+CopyFiles=HXDriverDemo_Device_CoInstaller_CopyFiles
+
+[HXDriverDemo_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[HXDriverDemo_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[HXDriverDemo_Device.NT.Wdf]
+KmdfService =  HXDriverDemo, HXDriverDemo_wdfsect
+[HXDriverDemo_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "HXDriverDemo Installation Disk"
+HXDriverDemo.DeviceDesc = "HXDriverDemo Device"
+HXDriverDemo.SVCDESC = "HXDriverDemo Service"
