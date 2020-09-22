@@ -12,16 +12,6 @@
 #include <atlutil.h>
 #include "HXThreadPool.h"
 
-
-
-
-//void ListPush(CString strFile)
-//{
-//    EnterCriticalSection(&g_listFileSection);
-//    g_listFile.push_back(strFile);
-//    LeaveCriticalSection(&g_listFileSection);
-//}
-//
 //inline void TTEngWaitForObject(HANDLE hHandle)
 //{
 //    if (NULL == hHandle)
