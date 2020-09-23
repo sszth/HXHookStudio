@@ -27,7 +27,6 @@ void HXThreadPool::HXTask::DoTask(void* pvParam, OVERLAPPED* pOverlapped)
 {
     CString strDir = m_strDir;
     std::vector<HANDLE> listHandle;
-    //std::list<CString> vecDir;
 
     WIN32_FIND_DATAW w32FindData;
     HANDLE hd = FindFirstFileEx(strDir, FINDEX_INFO_LEVELS::FindExInfoBasic, &w32FindData, FINDEX_SEARCH_OPS::FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
@@ -50,8 +49,6 @@ void HXThreadPool::HXTask::DoTask(void* pvParam, OVERLAPPED* pOverlapped)
                 strFull += _T("\\");
                 strFull += w32FindData.cFileName;
                 strFull += _T("\\*");
-                //vecDir.push_back(strFull);
-                //auto iter = vecDir.rbegin();
                 HXThreadPool::Initstance()->Start(strFull);
                 continue;
             }
@@ -73,7 +70,6 @@ HXThreadPool::HXThreadPool()
 void HXThreadPool::MapAdd(std::wstring strDir, std::wstring strFileName)
 {
     EnterCriticalSection(&m_listFileSection);
-    //m_mapRes.insert({ strDir, strFileName });
     m_mapRes.insert(std::pair<std::wstring, std::wstring>(strDir, strFileName));
     LeaveCriticalSection(&m_listFileSection);
 }

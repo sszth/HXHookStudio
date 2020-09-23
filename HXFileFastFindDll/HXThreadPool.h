@@ -30,7 +30,7 @@ public:
         void DoTask(void* pvParam, OVERLAPPED* pOverlapped);
     };
 
-    void Init(CString strDir)
+    void Initialize()
     {
 		// ∑«I/O√‹ºØ
 		//DWORD dw = HXGetDefaultWorkerThreadCout();
@@ -39,18 +39,17 @@ public:
 		m_ThreadPool.Initialize();
 
 		InitializeCriticalSection(&m_listFileSection);
-		Start(strDir);
     }
     void MapAdd(std::wstring strDir, std::wstring strFileName);
     void ShutDown(DWORD dwMaxWait);
 
+	void Start(CString strDir)
+	{
+		HXTask* pTask = new HXTask(strDir);
+		m_ThreadPool.QueueRequest((DWORD_PTR)pTask);
+	}
 private:
 	
-    void Start(CString strDir)
-    {
-        HXTask* pTask = new HXTask(strDir);
-        m_ThreadPool.QueueRequest((DWORD_PTR)pTask);
-    }
 
 private:
     static HXThreadPool* m_Init;

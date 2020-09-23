@@ -1,4 +1,6 @@
 #pragma once
 #include <string>
-void HXStartFastFind(std::wstring strDir);
-void HXShutDown(DWORD dwMaxWait);
+void HXFastFindInitialize();
+void HXFastFindStart(std::wstring strDir);
+void HXFastFindShutDown(DWORD dwMaxWait);
+
