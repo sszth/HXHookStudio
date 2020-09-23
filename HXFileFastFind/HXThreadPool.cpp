@@ -1,7 +1,8 @@
 #include "HXSysHelper.h"
 #include "HXThreadPool.h"
+#ifdef ATL_THREADPOOL
 
-HXThreadPool*  HXThreadPool::m_Init = new HXThreadPool();
+HXThreadPool* HXThreadPool::m_Init = new HXThreadPool();
 
 BOOL HXThreadPool::HXWork::Initialize(void* pvWorkerParam)
 {
@@ -72,7 +73,7 @@ HXThreadPool::HXThreadPool()
     InitializeCriticalSection(&m_listFileSection);
 }
 
-void HXThreadPool::MapAdd( std::wstring strDir,  std::wstring strFileName)
+void HXThreadPool::MapAdd(std::wstring strDir, std::wstring strFileName)
 {
     EnterCriticalSection(&m_listFileSection);
     //m_mapRes.insert({ strDir, strFileName });
@@ -84,3 +85,7 @@ void HXThreadPool::ShutDown(DWORD dwMaxWait)
 {
     m_ThreadPool.Shutdown(dwMaxWait);
 }
+
+#else
+
+#endif // ATL_THREADPOOL

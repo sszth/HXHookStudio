@@ -15,30 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HXFileFastFind.cpp">
+    <ClCompile Include="HXFileFastFindTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="HXThreadPool.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HXSysHelper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="HXThreadPool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="HXSysHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="HXFileFastFind.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Source.def">
-      <Filter>源文件</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -1,6 +1,10 @@
 #pragma once
-#include <atlutil.h>
+
 #include <unordered_map>
+
+#ifdef ATL_THREADPOOL   // ATL CThreadPool 在dll中线程一直创建失败
+
+#include <atlutil.h>
 class HXThreadPool
 {
 public:
@@ -28,14 +32,14 @@ public:
     void Start(CString strDir)
     {
         HXTask* pTask = new HXTask(strDir);
-        m_ThreadPool.QueueRequest((DWORD_PTR)pTask); 
+        m_ThreadPool.QueueRequest((DWORD_PTR)pTask);
     }
     void MapAdd(std::wstring strDir, std::wstring strFileName);
     void ShutDown(DWORD dwMaxWait);
 
 private:
     static HXThreadPool* m_Init;
-	CThreadPool<HXWork> m_ThreadPool;
+    CThreadPool<HXWork> m_ThreadPool;
     std::unordered_multimap<std::wstring, std::wstring>   m_mapRes;
 
     CRITICAL_SECTION m_listFileSection;
@@ -45,3 +49,39 @@ private:
     HXThreadPool& operator=(const HXThreadPool&) = delete;
 };
 
+#else
+
+class HXThreadPool
+{
+public:
+    HXThreadPool();
+    ~HXThreadPool();
+
+    HRESULT Initialize(int nNumThreads = 0, DWORD dwStackSize = 0, HANDLE hCompletion = INVALID_HANDLE_VALUE)
+    {
+        ASSERT(m_hRequestQueue == INVALID_HANDLE_VALUE);
+
+        if (m_hRequestQueue)
+        {
+            ::SetLastError(ERROR_ALREADY_INITIALIZED);
+            return S_FALSE;
+        }
+    }
+
+private:
+    static HXThreadPool* m_Init;
+
+
+
+    HANDLE m_hRequestQueue;
+    //CThreadPool<HXWork> m_ThreadPool;
+    std::unordered_multimap<std::wstring, std::wstring>   m_mapRes;
+
+    CRITICAL_SECTION m_listFileSection;
+private:
+    HXThreadPool(HXThreadPool&) = delete;
+    HXThreadPool& operator=(const HXThreadPool&) = delete;
+};
+
+
+#endif // ATL_THREADPOOL

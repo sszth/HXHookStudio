@@ -11,57 +11,41 @@
 #include <Windows.h>
 #include <atlutil.h>
 #include "HXThreadPool.h"
+#include "HXFileFastFind.h"
 
-
-
-
-//void ListPush(CString strFile)
-//{
-//    EnterCriticalSection(&g_listFileSection);
-//    g_listFile.push_back(strFile);
-//    LeaveCriticalSection(&g_listFileSection);
-//}
-//
-//inline void TTEngWaitForObject(HANDLE hHandle)
-//{
-//    if (NULL == hHandle)
-//        return;
-//
-//    MSG msg;
-//    int nTaskThreads = 1;
-//    while (nTaskThreads > 0 && NULL != hHandle)
-//    {
-//        // @warning: 这里的fWaitAll不能设置成TRUE，否则会发生死锁
-//        int uiRet = (int)MsgWaitForMultipleObjects(nTaskThreads, &hHandle, FALSE, INFINITE, QS_ALLINPUT);
-//        if (uiRet == WAIT_OBJECT_0 + nTaskThreads)
-//        {
-//            while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-//            {
-//                TranslateMessage(&msg);
-//                DispatchMessage(&msg);
-//            }
-//        }
-//        else if (uiRet >= WAIT_OBJECT_0 && uiRet < (int)(WAIT_OBJECT_0 + nTaskThreads))
-//        {
-//            // @waring: MsgWaitForMultipleObjects不允许m_threadIds数组中有空隙
-//            int nIndex = uiRet - WAIT_OBJECT_0;
-//            hHandle = NULL;
-//            nTaskThreads--;
-//        }
-//        else
-//        {
-//            uiRet = GetLastError();
-//            break;
-//        }
-//    }
-//}
-int main(int argc, char* argv[])
+BOOL APIENTRY DllMain(HMODULE hModule,
+    DWORD  ul_reason_for_call,
+    LPVOID lpReserved
+)
 {
-    CString strDir = _T("G:\\20_WindowsSystem\\01——简单TCP_UDP\\*");
-    //CString strDir = _T("G:\\*");
-    HXThreadPool::Initstance()->Start(strDir);
-    HXThreadPool::Initstance()->ShutDown(INFINITE);
-
-    return 0;
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
 }
 
+//int main(int argc, char* argv[])
+//{
+//    CString strDir = _T("G:\\20_WindowsSystem\\01——简单TCP_UDP\\*");
+//    //CString strDir = _T("G:\\*");
+//    HXThreadPool::Initstance()->Start(strDir);
+//    HXThreadPool::Initstance()->ShutDown(INFINITE);
+//
+//    return 0;
+//}
+
+void HXStartFastFind(std::wstring strDir)
+{
+    CString strDirTmp = strDir.data();
+    HXThreadPool::Initstance()->Start(strDirTmp);
+}
+
+void HXShutDown(DWORD dwMaxWait)
+{
+    HXThreadPool::Initstance()->ShutDown(dwMaxWait);
+}

@@ -1,0 +1,6 @@
+
+LIBRARY
+
+EXPORTS
+	HXStartFastFind
+	HXShutDown
