@@ -41,7 +41,7 @@ void HXThreadPool::HXTask::DoTask(void* pvParam, OVERLAPPED* pOverlapped)
 
             if (w32FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                //TODO:新线程用于查找文件
+                // 新线程用于查找文件
                 DWORD dwID;
                 CString strFull;
                 int nValidPath = strDir.ReverseFind(_T('\\'));
@@ -67,17 +67,6 @@ HXThreadPool::HXThreadPool()
 {
 }
 
-void HXThreadPool::MapAdd(std::wstring strDir, std::wstring strFileName)
-{
-    EnterCriticalSection(&m_listFileSection);
-    m_mapRes.insert(std::pair<std::wstring, std::wstring>(strDir, strFileName));
-    LeaveCriticalSection(&m_listFileSection);
-}
-
-void HXThreadPool::ShutDown(DWORD dwMaxWait)
-{
-    m_ThreadPool.Shutdown(dwMaxWait);
-}
 
 #else
 

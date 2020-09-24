@@ -1,4 +1,5 @@
 LIBRARY
 EXPORTS
-	HXStartFastFind
-	HXShutDown
+	HXFastFindInitialize
+	HXFastFindStart
+	HXFastFindShutDown

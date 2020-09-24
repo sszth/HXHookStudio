@@ -4,18 +4,24 @@
 #include "HXThreadPool.h"
 #include "HXFileFastFind.h"
 
-void HXStartFastFind(std::wstring strDir)
+
+void HXFastFindInitialize()
+{
+	HXThreadPool::Initstance()->Initialize();
+}
+
+void HXFastFindStart(std::wstring strDir)
 {
 	CString strDirTmp = strDir.data();
 	HXThreadPool::Initstance()->Start(strDirTmp);
 }
 
-void HXShutDown(DWORD dwMaxWait)
+void HXFastFindShutDown(DWORD dwMaxWait)
 {
 	HXThreadPool::Initstance()->ShutDown(dwMaxWait);
 }
 
-void HXFastFindInitialize()
+void HXFastFindEnd()
 {
-	HXThreadPool::Initstance()->Initialize();
+	HXThreadPool::Initstance()->FindEnd();
 }

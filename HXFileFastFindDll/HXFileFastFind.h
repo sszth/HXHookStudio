@@ -3,4 +3,5 @@
 void HXFastFindInitialize();
 void HXFastFindStart(std::wstring strDir);
 void HXFastFindShutDown(DWORD dwMaxWait);
+void HXFastFindEnd();
 
