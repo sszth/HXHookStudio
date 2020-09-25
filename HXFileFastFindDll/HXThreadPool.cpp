@@ -30,7 +30,8 @@ void HXThreadPool::HXTask::DoTask(void* pvParam, OVERLAPPED* pOverlapped)
 
     WIN32_FIND_DATAW w32FindData;
     HANDLE hd = FindFirstFileEx(strDir, FINDEX_INFO_LEVELS::FindExInfoBasic, &w32FindData, FINDEX_SEARCH_OPS::FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
-    if (INVALID_HANDLE_VALUE != hd)
+	//HANDLE hd = FindFirstFile(strDir, &w32FindData);
+	if (INVALID_HANDLE_VALUE != hd)
     {
         do
         {
@@ -61,6 +62,7 @@ void HXThreadPool::HXTask::DoTask(void* pvParam, OVERLAPPED* pOverlapped)
             FindClose(hd);
         }
     }
+	HXThreadPool::Initstance()->m_llTaskNum--;
 }
 
 HXThreadPool::HXThreadPool()

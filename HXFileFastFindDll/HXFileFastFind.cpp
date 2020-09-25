@@ -18,10 +18,11 @@ void HXFastFindStart(std::wstring strDir)
 
 void HXFastFindShutDown(DWORD dwMaxWait)
 {
+	HXThreadPool::Initstance()->WaitCurrentTaskEnd();
 	HXThreadPool::Initstance()->ShutDown(dwMaxWait);
 }
 
 void HXFastFindEnd()
 {
-	HXThreadPool::Initstance()->FindEnd();
+	HXThreadPool::Initstance()->WaitCurrentTaskEnd();
 }

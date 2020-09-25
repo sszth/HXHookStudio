@@ -7,6 +7,8 @@
 #ifdef ATL_THREADPOOL   // ATL CThreadPool 在dll中线程一直创建失败
 #define HX_ATLS_POOL_SHUTDOWN ((OVERLAPPED*) ((__int64) -1))
 #include <atlutil.h>
+#include <atomic>
+// 如果为磁盘根目录会与everything差3个文件
 class HXThreadPool
 {
 public:
@@ -43,7 +45,9 @@ public:
 		//m_ThreadPool.Initialize(NULL, dw);
 		// 如果在dll中会造成死锁
 		m_ThreadPool.Initialize();
-
+		m_llTaskNum = 0L;
+		m_llDirNum = 0L;
+		auto hx = 0LL;
 
 		m_hResEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 		if (!m_hResEvent)
@@ -60,7 +64,11 @@ public:
 		}
 		UINT dwThreadID;
 		ResetEvent(m_hResEvent);
-		_beginthreadex(NULL, 0, WorkThreadRecvRes, (LPVOID)this, NULL, &dwThreadID);
+		uintptr_t hTHread = _beginthreadex(NULL, 0, WorkThreadRecvRes, (LPVOID)this, NULL, &dwThreadID);
+		if (!hTHread)
+		{
+			return E_FAIL;
+		}
 		DWORD dwRet = WaitForSingleObject(m_hResEvent, 60000);
 		if (dwRet != WAIT_OBJECT_0)
 		{
@@ -77,6 +85,7 @@ public:
     }
     BOOL MapAdd(std::wstring strDir, std::wstring strFileName)
 	{
+		m_llDirNum++;
 		PHXDirMeta p = new HXDirMeta();
 		p->m_strDir = strDir;
 		p->m_strFileName = strFileName;
@@ -107,12 +116,32 @@ public:
 		}
 
 		m_mapRes.clear();
+		return S_OK;
 	}
 
 	void Start(CString strDir)
 	{
+		m_llTaskNum++;
+
 		HXTask* pTask = new HXTask(strDir);
 		m_ThreadPool.QueueRequest((DWORD_PTR)pTask);
+	}
+
+	void WaitCurrentTaskEnd()
+	{
+		// 查找结束
+		while (m_llTaskNum)
+		{
+			::SwitchToThread();
+		}
+		// 添加路径结束
+		while (m_llDirNum)
+		{
+			::SwitchToThread();
+		}
+
+		// 当前任务结束
+		ReleaseAll();
 	}
 private:
 	static UINT WINAPI WorkThreadRecvRes(LPVOID pv)
@@ -143,6 +172,8 @@ private:
 				m_mapRes.insert(pair);
 				m_unorderedmapRes.insert(pair);
 				delete p;
+
+				m_llDirNum--;
 			}
 		}
 		SetEvent(m_hResEvent);
@@ -165,8 +196,11 @@ private:
 
 	void FindEnd()
 	{
-
 	}
+public:
+	std::atomic_ullong m_llTaskNum;
+	std::atomic_ullong m_llDirNum;
+
 private:
     static HXThreadPool* m_Init;
     CThreadPool<HXWork> m_ThreadPool;
@@ -176,7 +210,6 @@ private:
 	std::multimap<std::wstring, std::wstring>   m_mapRes;
     std::unordered_multimap<std::wstring, std::wstring>   m_unorderedmapRes;
 
-    CRITICAL_SECTION m_listFileSection;
 private:
     HXThreadPool();
     HXThreadPool(HXThreadPool&) = delete;
