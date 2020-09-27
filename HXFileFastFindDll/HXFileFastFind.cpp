@@ -12,7 +12,7 @@ void HXFastFindInitialize()
 
 void HXFastFindStart(std::wstring strDir)
 {
-	CString strDirTmp = strDir.data();
+	HXString strDirTmp = strDir.data();
 	HXThreadPool::Initstance()->Start(strDirTmp);
 }
 

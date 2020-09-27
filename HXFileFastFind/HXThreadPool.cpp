@@ -1,4 +1,4 @@
-#include "HXSysHelper.h"
+
 #include "HXThreadPool.h"
 #ifdef ATL_THREADPOOL
 
@@ -69,8 +69,20 @@ HXThreadPool::HXThreadPool()
     // 非I/O密集
     //DWORD dw = HXGetDefaultWorkerThreadCout();
     //m_ThreadPool.Initialize(NULL, dw);
-    m_ThreadPool.Initialize();
-    InitializeCriticalSection(&m_listFileSection);
+#ifndef _AFXDLL
+	// 如果在dll中会造成死锁
+	m_ThreadPool.Initialize();
+	InitializeCriticalSection(&m_listFileSection);
+#endif // !_AFXDLL
+}
+
+void HXThreadPool::Init()
+{
+#ifdef _AFXDLL
+	// 如果在dll中会造成死锁
+	m_ThreadPool.Initialize();
+	InitializeCriticalSection(&m_listFileSection);
+#endif // !_AFXDLL
 }
 
 void HXThreadPool::MapAdd(std::wstring strDir, std::wstring strFileName)

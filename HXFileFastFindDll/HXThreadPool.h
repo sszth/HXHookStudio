@@ -1,13 +1,32 @@
 #pragma once
 #include <Windows.h>
 
-#include <map>
+#define _Acquires_lock_(lock)
 #include <unordered_map>
-#define ATL_THREADPOOL
+// ATL_THREADPOOL为基础版本、创建、执行、改变大小、等待结束、中断
+//#define ATL_THREADPOOL
+// ATL增强版  添加成功回调
+#define HX_ATL_THREADPOOL
+
+#ifdef ATL_THREADPOOL
+#include <atlstr.h>
+typedef	CString HXString;
+#endif
+#ifdef HX_ATL_THREADPOOL
+#include <string>
+typedef	std::wstring HXString;
+#endif
+
+
+
+
 #ifdef ATL_THREADPOOL   // ATL CThreadPool 在dll中线程一直创建失败
 #define HX_ATLS_POOL_SHUTDOWN ((OVERLAPPED*) ((__int64) -1))
 #include <atlutil.h>
 #include <atomic>
+#include <vector>
+
+
 // 如果为磁盘根目录会与everything差3个文件
 class HXThreadPool
 {
@@ -38,7 +57,7 @@ public:
         void DoTask(void* pvParam, OVERLAPPED* pOverlapped);
     };
 
-    LRESULT Initialize()
+	LRESULT Initialize()
     {
 		// 非I/O密集
 		//DWORD dw = HXGetDefaultWorkerThreadCout();
@@ -170,7 +189,6 @@ private:
 				PHXDirMeta p = (PHXDirMeta)dwCompletionKey;
 				std::pair<std::wstring, std::wstring>  pair = std::pair<std::wstring, std::wstring>(p->m_strDir, p->m_strFileName);
 				m_mapRes.insert(pair);
-				m_unorderedmapRes.insert(pair);
 				delete p;
 
 				m_llDirNum--;
@@ -207,8 +225,7 @@ private:
 
 	HANDLE m_hResQueue;
 	HANDLE m_hResEvent;
-	std::multimap<std::wstring, std::wstring>   m_mapRes;
-    std::unordered_multimap<std::wstring, std::wstring>   m_unorderedmapRes;
+	std::unordered_map<std::wstring, std::wstring>   m_mapRes;
 
 private:
     HXThreadPool();
@@ -217,22 +234,40 @@ private:
 
 };
 
-#else
-//#endif
-//#ifdef HX_ATL_THREADPOOL   // 参照ATL实现线程池
+
+#endif
+
+#ifdef HX_ATL_THREADPOOL   // 参照ATL实现线程池
 //默认创建线程个数=(-HX_THREAD_DEFAULT_MULTIPLE)*CPU核心数
-#include <unordered_map>
 #include <process.h>
+#include <string>
+#include <atomic>
+#include "../CommonFiles/HXCriticalSection.h"
 #define HX_THREAD_DEFAULT_MULTIPLE	(-1)
+#define HX_POOL_SHUTDOWN			((OVERLAPPED*) ((__int64) -1))
+
+class CHXWorkBase
+{
+public:
+	CHXWork()
+	{}
+	~CHXWork()
+	{}
+
+	virtual 
+private:
+
+};
+
 class HXThreadPool
 {
 public:
-	HXThreadPool()
-	{
-	}
-	~HXThreadPool()
-	{
+	typedef std::unordered_map<DWORD, HANDLE> ThreadMap;
+	typedef std::unordered_multimap<std::wstring, std::wstring> ResMap;
 
+	static HXThreadPool* Initstance()
+	{
+		return m_Init;
 	}
 
     HRESULT Initialize(int nNumThreads = 0, DWORD dwStackSize = 0, HANDLE hCompletion = INVALID_HANDLE_VALUE)
@@ -245,8 +280,7 @@ public:
             return E_FAIL;
         }
 
-		InitializeCriticalSection(&m_critSec);
-
+		m_dwThreadEventId = 0;
 		m_hThreadEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 		if (m_hThreadEvent == INVALID_HANDLE_VALUE)
 		{
@@ -265,8 +299,69 @@ public:
     }
 	static  UINT _stdcall WorkerThreadProc(LPVOID lpParam)
 	{
-		HXThreadPool* pThreadPool = (HXThreadPool*)lpParam;
-		
+		HXThreadPool* pThreadPool = reinterpret_cast<HXThreadPool*>(lpParam);
+		if (!pThreadPool)
+		{
+			return -1;
+		}
+		return pThreadPool->ThreadProc();
+	}
+	void Start(HXString strDir)
+	{
+
+	}
+
+	LRESULT ShutDown(DWORD dwMaxWait)
+	{
+		return S_OK;
+	}
+
+	void WaitCurrentTaskEnd()
+	{
+
+	}
+
+	bool	InitWork()
+	{
+		return true;
+	}
+	bool	TerminateWork()
+	{
+		return true;
+	}
+	void	ExecuteWork()
+	{}
+protected:
+	LRESULT ThreadProc() throw()
+	{
+		DWORD dwNumberOfBytesTransferred = 0;
+		ULONG_PTR lpCompletionKey = NULL;
+		OVERLAPPED * pOverlapped = NULL;
+		// 此块用来确保_beginthread有返回值。
+		// TODO：学自ATL::CThreadPool 哪位大佬知道原因麻烦指正下小弟
+		{
+			if (!InitWork())
+			{
+				// TODO:此处对初始化失败 走等待m_hThreadEvent超时流程 待优化
+				return 1;
+			}
+			SetEvent(m_hThreadEvent);
+			while (GetQueuedCompletionStatus(m_hRequestQueue, &dwNumberOfBytesTransferred, &lpCompletionKey, &pOverlapped, INFINITE))
+			{
+				if (HX_POOL_SHUTDOWN == pOverlapped)
+				{
+					// TODO:暂不提供中止操作
+					break;
+				}
+				else
+				{
+					ExecuteWork();
+				}
+			}
+			TerminateWork();
+		}
+		m_dwThreadEventId = GetCurrentThreadId();
+		SetEvent(m_hThreadEvent);
 		return 0;
 	}
 private:
@@ -293,7 +388,7 @@ private:
 			return E_FAIL;
 		}
 
-		EnterCriticalSection(&m_critSec);
+		m_critSec.Lock();
 		int nCurrentThreads = m_threadMap.size();
 		if (nNumThreads == nCurrentThreads)
 		{
@@ -301,18 +396,46 @@ private:
 		}
 		else if (nNumThreads < nCurrentThreads)
 		{
+			ResetEvent(m_hThreadEvent);
+			// 在m_hRequestQueue处理前 不能退出此函数
+			PostQueuedCompletionStatus(m_hRequestQueue, 0, 0, HX_POOL_SHUTDOWN);
+			// 需要进行等待超时处理
+			DWORD dwRet = WaitForSingleObject(m_hThreadEvent, dwMaxWait);
+			// 对APC例程处理 APC例程添加QueueUserAPC
+			// WaitForSingleObjectEx(m_hThreadEvent, dwMaxWait, TRUE);
+			if (dwRet == WAIT_TIMEOUT)
+			{
+				return E_FAIL;
+			}
+			else if(dwRet != WAIT_OBJECT_0)
+			{
+				return E_FAIL;
+			}
+			ThreadMap::iterator iter = m_threadMap.find(m_dwThreadEventId);
+			if (iter == m_threadMap.end())
+			{
+				return E_FAIL;
+			}
 
+			if (WaitForSingleObject(iter->second, 60 * 1000) == WAIT_TIMEOUT)
+			{
+				CloseHandle(iter->second);
+				m_threadMap.erase(m_dwThreadEventId);
+			}
+			else
+			{
+				return E_FAIL;
+			}
 		}
 		else
 		{
 			int nNumNewThreads = nNumThreads - nCurrentThreads;
-
 			for (int nThreadIndex = 0; nThreadIndex < nNumNewThreads; nThreadIndex++)
 			{
 				UINT dwThreadID;
 				ResetEvent(m_hThreadEvent);				
-				UINT_PTR nThread = _beginthreadex(NULL, 0, WorkerThreadProc, (LPVOID)this, 0, &dwThreadID);
-				if (NULL != nThread)
+				uintptr_t nThread = _beginthreadex(NULL, 0, WorkerThreadProc, (LPVOID)this, 0, &dwThreadID);
+				if (FAILED(nThread))
 				{
 					return E_FAIL;
 				}
@@ -320,7 +443,7 @@ private:
 				DWORD dwRet = WaitForSingleObject(m_hThreadEvent, dwMaxWait);
 				if (WAIT_OBJECT_0 != dwRet)
 				{
-					if (WAIT_TIMEOUT != dwRet)
+					if (WAIT_TIMEOUT == dwRet)
 					{
 						SetLastError(WAIT_TIMEOUT);
 						return E_FAIL;
@@ -330,30 +453,30 @@ private:
 						return E_FAIL;
 					}
 				}
+				m_threadMap.insert(std::pair< DWORD, HANDLE >(dwThreadID, (HANDLE)nThread));
 			}
 		}
-
-		LeaveCriticalSection(&m_critSec);
+		m_critSec.Unlock();
+		return S_OK;
 	}
 
 private:
     static HXThreadPool* m_Init;
 
-
-
-    HANDLE m_hRequestQueue;
-	DWORD m_dwMaxWait;
-	HANDLE m_hThreadEvent;
-	CRITICAL_SECTION	m_critSec;
-	std::unordered_map<DWORD, HANDLE> m_threadMap;
-
-
-    std::unordered_multimap<std::wstring, std::wstring>   m_mapRes;
-
-    CRITICAL_SECTION m_listFileSection;
+    HANDLE	m_hRequestQueue;
+	DWORD	m_dwMaxWait;
+	HANDLE	m_hThreadEvent;
+	DWORD	m_dwThreadEventId;
+	CHXAutoCriticalSection	m_critSec;
+	ThreadMap	m_threadMap;
+	ResMap		m_mapRes;
 private:
+	HXThreadPool()
+	{}
     HXThreadPool(HXThreadPool&) = delete;
     HXThreadPool& operator=(const HXThreadPool&) = delete;
+	~HXThreadPool()
+	{}
 };
 
 

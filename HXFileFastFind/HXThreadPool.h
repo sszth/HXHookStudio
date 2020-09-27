@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-
+#define ATL_THREADPOOL  
 #ifdef ATL_THREADPOOL   // ATL CThreadPool 在dll中线程一直创建失败
 
 #include <atlutil.h>
@@ -34,6 +34,7 @@ public:
         HXTask* pTask = new HXTask(strDir);
         m_ThreadPool.QueueRequest((DWORD_PTR)pTask);
     }
+	void Init();
     void MapAdd(std::wstring strDir, std::wstring strFileName);
     void ShutDown(DWORD dwMaxWait);
 

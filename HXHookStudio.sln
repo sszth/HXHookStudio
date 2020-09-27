@@ -36,6 +36,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HXFileFastFindWnd", "HXFile
 		{73912CCF-5FC7-4493-817A-4DD2C3D27B76} = {73912CCF-5FC7-4493-817A-4DD2C3D27B76}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCLibrary1", "MFCLibrary1\MFCLibrary1.vcxproj", "{217A8878-C5B3-4394-9613-70F151102C2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -276,6 +278,18 @@ Global
 		{11ABC084-9B76-46ED-8EF7-296B1A7C3755}.Release|x64.Build.0 = Release|x64
 		{11ABC084-9B76-46ED-8EF7-296B1A7C3755}.Release|x86.ActiveCfg = Release|Win32
 		{11ABC084-9B76-46ED-8EF7-296B1A7C3755}.Release|x86.Build.0 = Release|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Debug|ARM.ActiveCfg = Debug|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Debug|x64.ActiveCfg = Debug|x64
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Debug|x64.Build.0 = Debug|x64
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Debug|x86.ActiveCfg = Debug|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Debug|x86.Build.0 = Debug|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Release|ARM.ActiveCfg = Release|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Release|ARM64.ActiveCfg = Release|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Release|x64.ActiveCfg = Release|x64
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Release|x64.Build.0 = Release|x64
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Release|x86.ActiveCfg = Release|Win32
+		{217A8878-C5B3-4394-9613-70F151102C2A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
