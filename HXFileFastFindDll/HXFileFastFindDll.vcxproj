@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\CommonFiles\HXCriticalSection.h" />
     <ClInclude Include="..\CommonFiles\HXSysHelper.h" />
     <ClInclude Include="HXFileFastFind.h" />
     <ClInclude Include="HXThreadPool.h" />

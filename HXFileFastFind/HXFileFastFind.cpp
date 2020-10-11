@@ -11,41 +11,14 @@
 #include <Windows.h>
 #include <atlutil.h>
 #include "HXThreadPool.h"
-#include "HXFileFastFind.h"
 
-BOOL APIENTRY DllMain(HMODULE hModule,
-    DWORD  ul_reason_for_call,
-    LPVOID lpReserved
-)
+
+int main(int argc, char* argv[])
 {
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
-    }
-    return TRUE;
-}
+    CString strDir = _T("G:\\20_WindowsSystem\\01——简单TCP_UDP\\*");
+    //CString strDir = _T("G:\\*");
+    HXThreadPool::Initstance()->Start(strDir);
+    HXThreadPool::Initstance()->ShutDown(INFINITE);
 
-//int main(int argc, char* argv[])
-//{
-//    CString strDir = _T("G:\\20_WindowsSystem\\01——简单TCP_UDP\\*");
-//    //CString strDir = _T("G:\\*");
-//    HXThreadPool::Initstance()->Start(strDir);
-//    HXThreadPool::Initstance()->ShutDown(INFINITE);
-//
-//    return 0;
-//}
-
-void HXStartFastFind(std::wstring strDir)
-{
-    CString strDirTmp = strDir.data();
-    HXThreadPool::Initstance()->Start(strDirTmp);
-}
-
-void HXShutDown(DWORD dwMaxWait)
-{
-    HXThreadPool::Initstance()->ShutDown(dwMaxWait);
+    return 0;
 }
