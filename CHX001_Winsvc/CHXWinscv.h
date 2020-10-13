@@ -60,11 +60,15 @@ public:
 	//            	LRESULT
 	//************************************
 	LRESULT StartServiceEx(OUT SERVICE_STATUS_PROCESS ssStatus, IN LPCWSTR lpServiceName, IN DWORD dwNumServiceArgs = 0, LPCWSTR* lpServiceArgVectors = NULL);
+	LRESULT StopServiceEx(OUT SERVICE_STATUS_PROCESS ssStatus);
+	LRESULT StopDependentServices(OUT SERVICE_STATUS_PROCESS &ssStatus);
 protected:
 private:
 	void ResetServiceHandle(IN OUT SC_HANDLE& hHandle);
+	void CleanHandle();
 
 private:
 	SC_HANDLE m_hSCM;
+	SC_HANDLE m_hService;
 };
 

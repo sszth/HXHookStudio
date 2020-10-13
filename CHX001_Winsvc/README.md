@@ -7,11 +7,7 @@ CHX001_WinsvcHeader
 	ChangeServiceConfigW
 	ControlService
 	ControlServiceExW
-	CreateServiceW
 	DeleteService
-	EnumDependentServicesW
-	EnumServicesStatusExW
-	EnumServicesStatusW
 	GetServiceDirectory
 	GetServiceDisplayNameW
 	GetServiceKeyNameW
@@ -19,21 +15,16 @@ CHX001_WinsvcHeader
 	LockServiceDatabase
 	NotifyBootConfigStatus
 	NotifyServiceStatusChangeW
-	OpenSCManagerW
-	OpenServiceW
 	QueryServiceConfig2W
 	QueryServiceConfigW
 	QueryServiceDynamicInformation 	
 	QueryServiceLockStatusW
 	QueryServiceObjectSecurity
-	QueryServiceStatus
-	QueryServiceStatusEx
 	RegisterServiceCtrlHandlerExW
 	RegisterServiceCtrlHandlerW
 	SetServiceObjectSecurity
 	SetServiceStatus
 	StartServiceCtrlDispatcherW
-	StartServiceW
 	UnlockServiceDatabase
 	LPHANDLER_FUNCTION
 	LPHANDLER_FUNCTION_EX
@@ -45,6 +36,15 @@ CHX001_WinsvcHeader
 	OpenService
 	StartService
 	CloseServiceHandle
+	CreateServiceW
+	StartServiceW
+	QueryServiceStatus
+	QueryServiceStatusEx
+	OpenSCManagerW
+	OpenServiceW
+	EnumDependentServicesW
+	EnumServicesStatusExW
+	EnumServicesStatusW
 
 
 	
