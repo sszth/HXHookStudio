@@ -61,6 +61,13 @@ public:
 	//************************************
 	LRESULT StartServiceEx(OUT SERVICE_STATUS_PROCESS ssStatus, IN LPCWSTR lpServiceName, IN DWORD dwNumServiceArgs = 0, LPCWSTR* lpServiceArgVectors = NULL);
 	LRESULT StopServiceEx(OUT SERVICE_STATUS_PROCESS ssStatus);
+	//************************************
+	// 功能:		此函数未处理多层次服务依赖
+	// 参数:
+	//				OUT SERVICE_STATUS_PROCESS & ssStatus
+	// 返回值:
+	//            	LRESULT
+	//************************************
 	LRESULT StopDependentServices(OUT SERVICE_STATUS_PROCESS &ssStatus);
 protected:
 private:

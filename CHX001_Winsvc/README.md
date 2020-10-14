@@ -5,8 +5,6 @@ CHX001_WinsvcHeader
 	Œ¥ π”√£∫
 	ChangeServiceConfig2W
 	ChangeServiceConfigW
-	ControlService
-	ControlServiceExW
 	DeleteService
 	GetServiceDirectory
 	GetServiceDisplayNameW
@@ -45,6 +43,8 @@ CHX001_WinsvcHeader
 	EnumDependentServicesW
 	EnumServicesStatusExW
 	EnumServicesStatusW
+	ControlService
+	ControlServiceExW
 
 
 	

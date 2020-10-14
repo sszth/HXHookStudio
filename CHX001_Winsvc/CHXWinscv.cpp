@@ -507,16 +507,45 @@ LRESULT CHXWinscv::StopServiceEx(OUT SERVICE_STATUS_PROCESS& ssStatus, IN LPCWST
 		}
 	}
 
-	// 如果当前服务在运行，需要停止依赖
+	// 如果当前服务在运行，需要停止依赖 此函数未停止多层次依赖
 	StopDependentServices(ssStatus);
 
+	SERVICE_CONTROL_STATUS_REASON_PARAMS scsrParam;
+	if (!::ControlServiceEx(m_hService, SERVICE_STOP, SERVICE_CONTROL_STATUS_REASON_INFO, &scsrParam))
+	{
+		CleanHandle();
+		return S_FALSE;
+	}
+
+	while (scsrParam.ServiceStatus.dwCurrentState != SERVICE_STOP)
+	{
+		Sleep(scsrParam.ServiceStatus.dwWaitHint);
+		if (!::QueryServiceStatusEx(m_hService, SC_STATUS_PROCESS_INFO))
+		{
+		}
+		if (scsrParam.ServiceStatus.dwCurrentState == SERVICE_STOP)
+		{
+			break;
+		}
+		if (::GetTickCount() - dwStartTickCount > dwWaitTime)
+		{
+			CleanHandle();
+			return S_FALSE;
+		}
+	}
+	CleanHandle();
+	return S_OK;
 }
 
 LRESULT CHXWinscv::StopDependentServices(OUT SERVICE_STATUS_PROCESS& ssStatus)
 {
 	LPENUM_SERVICE_STATUS lpDependencies = NULL;
+	ENUM_SERVICE_STATUS	ess;
+	SERVICE_CONTROL_STATUS_REASON_PARAMS scsrParam;
+	SC_HANDLE hDependentService = NULL;
 	DWORD cbBytesNeeded = 0;
 	DWORD dwServicesReturned = 0;
+	DWORD dwStartTime = ::GetTickCount();
 	if (::EnumDependentServices(m_hService, SERVICE_ACTIVE, lpDependencies, 0, &cbBytesNeeded, &dwServicesReturned))
 	{
 		// 无依赖项
@@ -529,20 +558,63 @@ LRESULT CHXWinscv::StopDependentServices(OUT SERVICE_STATUS_PROCESS& ssStatus)
 			return S_FALSE;
 		}
 
+		lpDependencies = (LPENUM_SERVICE_STATUS)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, cbBytesNeeded);
+		NULL_RETURN_FALSE(lpDependencies);
+
+		__try
+		{
+			if (::EnumDependentServices(m_hService, SERVICE_ACTIVE, lpDependencies, cbBytesNeeded, &cbBytesNeeded, &dwServicesReturned))
+			{
+				return S_FALSE;
+			}
+
+			for (int nIndex=0; nIndex < dwServicesReturned; ++nIndex)
+			{
+				ess = *(lpDependencies + nIndex);
+				hDependentService = ::OpenService(m_hSCM, ess.lpServiceName, SERVICE_STOP | SERVICE_QUERY_STATUS);
+				NULL_RETURN_FALSE(hDependentService);
+
+				__try
+				{
+					if (!::ControlServiceEx(hDependentService, SERVICE_CONTROL_STOP, SERVICE_CONTROL_STATUS_REASON_INFO, &scsrParam))
+					{
+						ResetServiceHandle(hDependentService);
+						return S_FALSE;
+					}
+
+					while (scsrParam.ServiceStatus.dwCheckPoint != SERVICE_STOPPED)
+					{
+						Sleep(scsrParam.ServiceStatus.dwWaitHint);
+						if (!::QueryServiceStatusEx(hDependentService, SC_STATUS_PROCESS_INFO, (LPBYTE)&ssStatus, sizeof(ssStatus), &cbBytesNeeded))
+						{
+							ResetServiceHandle(hDependentService);
+							return S_FALSE;
+						}
+
+						if (ssStatus.dwCurrentState == SERVICE_STOPPED)
+						{
+							break;
+						}
+						if (GetTickCount()- dwStartTime > ssStatus.dwWaitHint)
+						{
+							ResetServiceHandle(hDependentService);
+							return S_FALSE;
+						}
+					}
+				}
+				__finally
+				{
+					ResetServiceHandle(hDependentService);
+				}
+			}
+
+		}
+		__finally
+		{
+			HeapFree(GetProcessHeap(), 0, lpDependencies);
+		}
 	}
-
-
-
-
-
-		EnumDependentServicesW(
-			_In_            SC_HANDLE               hService,
-			_In_            DWORD                   dwServiceState,
-			_Out_writes_bytes_opt_(cbBufSize)
-			LPENUM_SERVICE_STATUSW  lpServices,
-			_In_            DWORD                   cbBufSize,
-			_Out_           LPDWORD                 pcbBytesNeeded,
-			_Out_           LPDWORD                 lpServicesReturned
+	return S_OK;
 }
 
 void CHXWinscv::ResetServiceHandle(IN OUT SC_HANDLE& hHandle)
