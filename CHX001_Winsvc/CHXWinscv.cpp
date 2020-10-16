@@ -607,7 +607,6 @@ LRESULT CHXWinscv::StopDependentServices(OUT SERVICE_STATUS_PROCESS& ssStatus)
 					ResetServiceHandle(hDependentService);
 				}
 			}
-
 		}
 		__finally
 		{
