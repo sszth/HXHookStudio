@@ -12,8 +12,6 @@ public:
 	CHXWinscv();
 	~CHXWinscv();
 public:
-	LRESULT RefreshServer();
-
 	//************************************
 	// Method:    GetService
 	// FullName:  CHXWinscv::GetService
@@ -29,10 +27,10 @@ public:
 	//		SERVICE_WIN32_SHARE_PROCESS:Services that share a process with one or more other services
 	// author:	  SSZTH
 	//************************************
-	LRESULT GetService(OUT List_ENUM_SERVICE_STATUS& list, IN DWORD dwServiceType = SERVICE_DRIVER | SERVICE_WIN32, IN DWORD dwServiceState = SERVICE_STATE_ALL);
-	LRESULT GetServiceEx(OUT List_ENUM_SERVICE_STATUS_PROCESS& list, IN DWORD dwServiceType = SERVICE_DRIVER | SERVICE_WIN32, IN DWORD dwServiceState = SERVICE_STATE_ALL, IN LPCWSTR pszGroupName = NULL);
+	LRESULT __stdcall GetService(OUT List_ENUM_SERVICE_STATUS& list, IN DWORD dwServiceType = SERVICE_DRIVER | SERVICE_WIN32, IN DWORD dwServiceState = SERVICE_STATE_ALL);
+	LRESULT __stdcall GetServiceEx(OUT List_ENUM_SERVICE_STATUS_PROCESS& list, IN DWORD dwServiceType = SERVICE_DRIVER | SERVICE_WIN32, IN DWORD dwServiceState = SERVICE_STATE_ALL, IN LPCWSTR pszGroupName = NULL);
 
-	LRESULT CreateService(IN LPCWSTR lpServiceName, IN LPCWSTR lpDisplayName, IN DWORD dwDesiredAccess, IN DWORD dwServiceType, IN DWORD dwStartType, IN DWORD dwErrorControl, IN LPCWSTR lpBinaryPathName, IN LPCWSTR lpLoadOrderGroup, IN LPDWORD lpdwTagId, IN LPCWSTR lpDependencies, IN LPCWSTR lpServiceStartName, IN LPCWSTR lpPassword);
+	LRESULT __stdcall CreateService(IN LPCWSTR lpServiceName, IN LPCWSTR lpDisplayName, IN DWORD dwDesiredAccess, IN DWORD dwServiceType, IN DWORD dwStartType, IN DWORD dwErrorControl, IN LPCWSTR lpBinaryPathName, IN LPCWSTR lpLoadOrderGroup, IN LPDWORD lpdwTagId, IN LPCWSTR lpDependencies, IN LPCWSTR lpServiceStartName, IN LPCWSTR lpPassword);
 
 	//************************************
 	// 功能:		启动服务，内部无校验,无法准确判断是否成功启动。
@@ -59,8 +57,8 @@ public:
 	// 返回值:
 	//            	LRESULT
 	//************************************
-	LRESULT StartServiceEx(OUT SERVICE_STATUS_PROCESS ssStatus, IN LPCWSTR lpServiceName, IN DWORD dwNumServiceArgs = 0, LPCWSTR* lpServiceArgVectors = NULL);
-	LRESULT StopServiceEx(OUT SERVICE_STATUS_PROCESS ssStatus);
+	LRESULT __stdcall StartServiceEx(OUT SERVICE_STATUS_PROCESS &ssStatus, IN LPCWSTR lpServiceName, IN DWORD dwNumServiceArgs = 0, LPCWSTR* lpServiceArgVectors = NULL);
+	LRESULT __stdcall StopServiceEx(OUT SERVICE_STATUS_PROCESS& ssStatus, IN LPCWSTR lpServiceName);
 	//************************************
 	// 功能:		此函数未处理多层次服务依赖
 	// 参数:
@@ -68,7 +66,8 @@ public:
 	// 返回值:
 	//            	LRESULT
 	//************************************
-	LRESULT StopDependentServices(OUT SERVICE_STATUS_PROCESS &ssStatus);
+	LRESULT __stdcall StopDependentServices(OUT SERVICE_STATUS_PROCESS &ssStatus);
+	LRESULT __stdcall DoUpdateSvcDacl(OUT SERVICE_STATUS_PROCESS& ssStatus, IN LPCWSTR lpServiceName, IN LPWSTR pTrusteeName);
 protected:
 private:
 	void ResetServiceHandle(IN OUT SC_HANDLE& hHandle);

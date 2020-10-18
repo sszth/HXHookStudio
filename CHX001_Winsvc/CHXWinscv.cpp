@@ -1,4 +1,5 @@
 #include "CHXWinscv.h"
+#include <AclAPI.h>
 
 inline bool IsNull(HANDLE hHandle)
 {
@@ -10,6 +11,10 @@ inline bool IsNull(HANDLE hHandle)
 	if (false==bRet){return S_FALSE;}
 #define FALSE_RETURN_FALSE(bRet)	\
 	if (FALSE==bRet){return S_FALSE;}
+#define RETURN_FALSE	\
+	{CleanHandle();return S_FALSE;}
+
+
 
 CHXWinscv::CHXWinscv()
 	: m_hSCM(NULL)
@@ -488,7 +493,9 @@ LRESULT CHXWinscv::StopServiceEx(OUT SERVICE_STATUS_PROCESS& ssStatus, IN LPCWST
 		}
 		Sleep(dwWaitTime);
 
-		if (!::QueryServiceStatusEx(m_hService, SC_STATUS_PROCESS_INFO, (LPBYTE)&ssStatus, sizeof(SERVICE_STATUS_PROCESS), &cbBytesNeeded))
+		if (!::QueryServiceStatusEx(m_hService, 
+			SC_STATUS_PROCESS_INFO, 
+			(LPBYTE)&ssStatus, sizeof(SERVICE_STATUS_PROCESS), &cbBytesNeeded))
 		{
 			CleanHandle();
 			return S_FALSE;
@@ -520,7 +527,9 @@ LRESULT CHXWinscv::StopServiceEx(OUT SERVICE_STATUS_PROCESS& ssStatus, IN LPCWST
 	while (scsrParam.ServiceStatus.dwCurrentState != SERVICE_STOP)
 	{
 		Sleep(scsrParam.ServiceStatus.dwWaitHint);
-		if (!::QueryServiceStatusEx(m_hService, SC_STATUS_PROCESS_INFO))
+		if (!::QueryServiceStatusEx(m_hService, 
+			SC_STATUS_PROCESS_INFO,
+			(LPBYTE)&ssStatus, sizeof(SERVICE_STATUS_PROCESS), &cbBytesNeeded))
 		{
 		}
 		if (scsrParam.ServiceStatus.dwCurrentState == SERVICE_STOP)
@@ -614,6 +623,107 @@ LRESULT CHXWinscv::StopDependentServices(OUT SERVICE_STATUS_PROCESS& ssStatus)
 		}
 	}
 	return S_OK;
+}
+
+LRESULT __stdcall CHXWinscv::DoUpdateSvcDacl(OUT SERVICE_STATUS_PROCESS& ssStatus, IN LPCWSTR lpServiceName, IN LPWSTR pTrusteeName)
+{
+	LRESULT dwRet = S_OK;
+	ssStatus = { 0 };
+	PACL  pNewAcl = NULL;
+	BOOL bDal = FALSE;
+	PACL pacl = NULL;
+	BOOL bDaclDefaulted = FALSE;
+	SECURITY_DESCRIPTOR sd = { 0 };
+	DWORD cbBytesNeeded = 0;
+	DWORD dwSize = 0;
+	DWORD dwError = 0;
+	EXPLICIT_ACCESS ea = { 0 };
+	PSECURITY_DESCRIPTOR psd = NULL;
+	m_hSCM = OpenSCManager(NULL, SERVICES_ACTIVE_DATABASE, GENERIC_WRITE);
+	NULL_RETURN_FALSE(m_hSCM);
+
+	m_hService = OpenService(m_hSCM, lpServiceName, READ_CONTROL | WRITE_DAC);
+	if (!m_hService)
+	{
+		dwRet = S_FALSE;
+		goto dacl_cleanup;
+	}
+	if (!::QueryServiceObjectSecurity(m_hService
+		, DACL_SECURITY_INFORMATION
+		, &psd
+		, 0
+		, &cbBytesNeeded))
+	{
+		if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+		{
+			dwSize = cbBytesNeeded;
+			psd = (PSECURITY_DESCRIPTOR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwSize);
+			if (psd == NULL)
+			{
+				dwRet = S_FALSE;
+				goto dacl_cleanup;
+			}
+			if (!::QueryServiceObjectSecurity(m_hService
+				, DACL_SECURITY_INFORMATION
+				, &psd
+				, dwSize
+				, &cbBytesNeeded))
+			{
+				dwRet = S_FALSE;
+				goto dacl_cleanup;
+			}
+		}
+		else
+		{
+			dwRet = S_FALSE;
+			goto dacl_cleanup;
+		}
+	}
+	if (!::GetSecurityDescriptorDacl(psd, 
+		&bDal,
+		&pacl,
+		&bDaclDefaulted))
+	{
+		dwRet = S_FALSE;
+		goto dacl_cleanup;
+	}
+	::BuildExplicitAccessWithName(&ea, pTrusteeName,
+		SERVICE_START | SERVICE_STOP | READ_CONTROL | DELETE, SET_ACCESS, NO_INHERITANCE);
+
+	dwError = SetEntriesInAcl(1, &ea, pacl, &pNewAcl);
+	if (ERROR_SUCCESS != dwError)
+	{
+		dwRet = S_FALSE;
+		goto dacl_cleanup;
+	}
+	if (!::InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION))
+	{
+		dwRet = S_FALSE;
+		goto dacl_cleanup;
+	}
+
+	if (!::SetSecurityDescriptorDacl(&sd, TRUE, pNewAcl, FALSE))
+	{
+		dwRet = S_FALSE;
+		goto dacl_cleanup;
+	}
+
+	if (!::SetServiceObjectSecurity(m_hService, DACL_SECURITY_INFORMATION, &sd))
+	{
+		dwRet = S_FALSE;
+		goto dacl_cleanup;
+	}
+dacl_cleanup:
+	CleanHandle();
+	if (NULL != pNewAcl)
+	{
+		LocalFree((HLOCAL)pNewAcl);
+	}
+	if (NULL != psd)
+	{
+		HeapFree(GetProcessHeap(), 0, (LPVOID)psd);
+	}
+	return dwRet;
 }
 
 void CHXWinscv::ResetServiceHandle(IN OUT SC_HANDLE& hHandle)
