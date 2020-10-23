@@ -147,12 +147,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="HXCommon.h" />
+    <ClInclude Include="HXNetworkManager.h" />
+    <ClInclude Include="HXObjectServer.h" />
+    <ClInclude Include="HXSocketFactory.h" />
+    <ClInclude Include="HXTcpClient.h" />
+    <ClInclude Include="HXTcpSocket.h" />
+    <ClInclude Include="HXWindowsSocketCommon.h" />
+    <ClInclude Include="IHXSocket.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HXNetwork.cpp" />
+    <ClCompile Include="HXNetworkManager.cpp" />
+    <ClCompile Include="HXObjectServer.cpp" />
+    <ClCompile Include="HXSocketFactory.cpp" />
+    <ClCompile Include="HXTcpClient.cpp" />
+    <ClCompile Include="HXTcpSocket.cpp" />
+    <ClCompile Include="HXWindowsSocketCommon.cpp" />
+    <ClCompile Include="IHXSocket.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -13,12 +13,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="HXExportHeader">
+      <UniqueIdentifier>{062af390-231c-4e04-958b-cbc0c40acc31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HXObjectServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HXTcpClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HXTcpSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HXCommon.h">
+      <Filter>HXExportHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="IHXSocket.h">
+      <Filter>HXExportHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="HXWindowsSocketCommon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HXNetworkManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HXSocketFactory.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -30,6 +57,27 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HXObjectServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HXTcpClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IHXSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HXTcpSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HXWindowsSocketCommon.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HXNetworkManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HXSocketFactory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

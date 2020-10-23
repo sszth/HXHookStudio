@@ -13,9 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{ecfa860f-8df3-417e-bc1a-2e6fa93bb2f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HXFileWallManage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IHXSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -24,6 +33,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="HXFireWallCore.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HXFileWallManage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IHXSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
