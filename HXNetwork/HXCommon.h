@@ -86,3 +86,70 @@ enum HXSocketType
 	HXSocketTcp = 1,
 	HXSocketUdp = 2,
 };
+
+// 目前只支持tcp
+// 地址族。
+enum HXSOCKET_AF
+{
+	HXSOCKET_AF_UNSPEC = 0,	//未定义
+	HXSOCKET_AF_INET = 1,	//IPV4
+	//HXSOCKET_AF_IPX		= 2,	//
+	//AF_APPLETALK
+	//AF_NETBIOS
+	//AF_INET6
+	//AF_IRDA
+	//AF_BTH
+};
+// 类型
+enum HXSOCKET_TYPE
+{
+	HXSOCKET_STREAM = 0,//tcp
+	//SOCK_DGRAM
+	//SOCK_RAW
+	//SOCK_RDM
+	//SOCK_SEQPACKET
+};
+// 协议
+enum HXSOCKET_PROTOCOL
+{
+	PROTOCOL_ICMP = 0,
+	PROTOCOL_IGMP = 1,
+	PROTOCOL_RFCOMM = 2,
+	PROTOCOL_TCP = 3,
+};
+
+struct HXSocketAddr
+{
+	HXSOCKET_AF m_af;
+	std::wstring m_strIP;
+	unsigned short m_shortPort;
+
+	HXSocketAddr() :m_af(HXSOCKET_AF_UNSPEC), m_shortPort(HXDEFAULT_PORT) {}
+};
+
+
+#include <cwchar>
+class HXCommonAlgorithm
+{
+public:
+	static bool WStringToString(IN const std::wstring& str1, OUT std::string& str2)
+	{
+		str2.clear();
+		for (wchar_t wc : str1)
+		{
+			std::mbstate_t state{};
+			std::string mb(MB_CUR_MAX, '\0');
+			if (-1 == std::wcrtomb(&mb[0], wc, &state))
+			{
+				return false;
+			}
+			str2.append(mb);
+		}
+		return true;
+	}
+	static bool StringToWstring()
+	{}
+
+private:
+
+};
