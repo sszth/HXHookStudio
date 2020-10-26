@@ -9,41 +9,17 @@
 class HXWindowsSocket : public IHXSocket
 {
 public:
-	HXWindowsSocket() :m_socket(INVALID_SOCKET) {}
+	HXWindowsSocket():m_socket(INVALID_SOCKET) {}
 
-	int WinErrorToHXError(int nWinError)
-	{
-		int nRet = HX_FALSE;
-		switch (nWinError)
-		{
-		case WSAENOBUFS:
-			nRet = HX_FALSE_NOBUFFSIZE;
-		default:
-			break;
-		}
-		return nRet;
-	}
-	int WinErrorToHXError()
-	{
-		int nWinError = WSAGetLastError();
-		int nRet = HX_FALSE;
-		switch (nWinError)
-		{
-		case WSAENOBUFS:
-			nRet = HX_FALSE_NOBUFFSIZE;
-		default:
-			break;
-		}
-		return nRet;
-	}
+	
 public:
 	virtual int Socket(HXSOCKET_AF af, HXSOCKET_TYPE type, HXSOCKET_PROTOCOL protocol) override
 	{
 		std::wclog << L"Socket HXSOCKET_AF(" << af << L") HXSOCKET_TYPE(" << type << L") HXSOCKET_PROTOCOL(" << protocol << L") Begin" << std::endl;
-		m_socket = ::socket(HXSOCKET_AF_TO_WINAF(af), HXSOCKET_TYPE_TO_WINTYPE(type), HXSOCKET_PROTOCOL_TO_WINPROTOCOL(protocol));
+		m_socket = ::socket(HXWindowsSocketCommon::HXSOCKET_AF_TO_WINAF(af), HXWindowsSocketCommon::HXSOCKET_TYPE_TO_WINTYPE(type), HXWindowsSocketCommon::HXSOCKET_PROTOCOL_TO_WINPROTOCOL(protocol));
 		if (INVALID_SOCKET == m_socket)
 		{
-			return WinErrorToHXError();
+			return HXWindowsSocketCommon::WinErrorToHXError();
 		}
 		std::wclog << L"Socket HXSOCKET_AF(" << af << L") HXSOCKET_TYPE(" << type << L") HXSOCKET_PROTOCOL(" << protocol << L") Success" << std::endl;
 		return HX_OK;
@@ -76,9 +52,9 @@ public:
 		std::wclog << L"Bind IP(" << hxAddr.m_strIP.c_str() << L") HXSOCKET_AF(" << hxAddr.m_af << L") Port(" << hxAddr.m_shortPort << L") Begin" << std::endl;
 		m_hxsocketAddr = hxAddr;
 		SOCKADDR_IN winAddr = {};
-		if (!HXSocketAddrToWinSocketAddr(m_hxsocketAddr, winAddr))
+		if (!HXWindowsSocketCommon::HXSocketAddrToWinSocketAddr(m_hxsocketAddr, winAddr))
 		{
-			return WinErrorToHXError();
+			return HXWindowsSocketCommon::WinErrorToHXError();
 		}
 
 		if (SOCKET_ERROR == ::bind(m_socket, (SOCKADDR*)&winAddr, sizeof(winAddr))))
@@ -101,86 +77,22 @@ public:
 	{
 		std::wclog << L"Connect IP(" << hxAddr.m_strIP.c_str() << L") HXSOCKET_AF(" << hxAddr.m_af << L") Port(" << hxAddr.m_shortPort << L") Begin" << std::endl;
 		SOCKADDR_IN winAddr = {};
-		if (!HXSocketAddrToWinSocketAddr(hxAddr, winAddr))
+		if (!HXWindowsSocketCommon::HXSocketAddrToWinSocketAddr(hxAddr, winAddr))
 		{
-			return WinErrorToHXError();
+			return HXWindowsSocketCommon::WinErrorToHXError();
 		}
 
 		if (SOCKET_ERROR == ::connect(m_socket, (SOCKADDR*)&winAddr, sizeof(winAddr)))
 		{
 			::closesocket(m_socket);
-			return WinErrorToHXError();
+			return HXWindowsSocketCommon::WinErrorToHXError();
 		}
 		std::wclog << L"Connect IP(" << hxAddr.m_strIP.c_str() << L") HXSOCKET_AF(" << hxAddr.m_af << L") Port(" << hxAddr.m_shortPort << L") Success" << std::endl;
 		return HX_OK;
 	}
 
-	int HXSOCKET_AF_TO_WINAF(HXSOCKET_AF af)
-	{
-		int nWinAF = 0;
-		switch (af)
-		{
-		case HXSOCKET_AF_UNSPEC:
-			nWinAF = AF_UNSPEC;
-			break;
-		case HXSOCKET_AF_INET:
-			nWinAF = AF_INET;
-			break;
-		default:
-			break;
-		}
-		return nWinAF;
-	}
 
-	int HXSOCKET_TYPE_TO_WINTYPE(HXSOCKET_TYPE type)
-	{
-		int nWinType = 0;
-		switch (type)
-		{
-		case HXSOCKET_STREAM:
-			nWinType = SOCK_STREAM;
-			break;
-		default:
-			break;
-		}
-		return nWinType;
-	}
-
-	int HXSOCKET_PROTOCOL_TO_WINPROTOCOL(HXSOCKET_PROTOCOL protocol)
-	{
-		int nWinProtocol = 0;
-		switch (protocol)
-		{
-		case PROTOCOL_ICMP:
-			nWinProtocol = IPPROTO_ICMP;
-			break;
-		case PROTOCOL_IGMP:
-			nWinProtocol = IPPROTO_IGMP;
-			break;
-		case PROTOCOL_RFCOMM:
-			//nWinProtocol = BTHPROTO_RFCOMM;
-			break;
-		case PROTOCOL_TCP:
-			nWinProtocol = IPPROTO_TCP;
-			break;
-		default:
-			break;
-		}
-		return nWinProtocol;
-	}
-
-	bool HXSocketAddrToWinSocketAddr(IN const HXSocketAddr& hxAddr, OUT SOCKADDR_IN& winAddr)
-	{
-		winAddr.sin_family = HXSOCKET_AF_TO_WINAF(hxAddr.m_af);
-		std::string strIP;
-		if (false == HXCommonAlgorithm::WStringToString(hxAddr.m_strIP, strIP))
-		{
-			return false;
-		}
-		winAddr.sin_addr.s_addr = inet_addr(strIP.c_str());
-		winAddr.sin_port = hxAddr.m_shortPort;
-		return true;
-	}
+	
 private:
 	SOCKET m_socket;
 	HXSocketAddr m_hxsocketAddr;
@@ -216,8 +128,74 @@ int HXWindowsSocketCommon::Initialize()
 IHXSocket_Ptr HXWindowsSocketCommon::GetSocket()
 {
 	IHXSocket_Ptr ptr = std::make_shared<HXWindowsSocket>();
-
 	return ptr;
+}
+
+bool HXWindowsSocketCommon::HXSocketAddrToWinSocketAddr(IN const HXSocketAddr& hxAddr, OUT SOCKADDR_IN& winAddr)
+{
+	winAddr.sin_family = HXSOCKET_AF_TO_WINAF(hxAddr.m_af);
+	std::string strIP;
+	if (false == HXCommonAlgorithm::WStringToString(hxAddr.m_strIP, strIP))
+	{
+		return false;
+	}
+	inet_pton(winAddr.sin_family, strIP.c_str(), (void*)&winAddr.sin_addr);
+	winAddr.sin_port = hxAddr.m_shortPort;
+	return true;
+}
+
+int HXWindowsSocketCommon::HXSOCKET_AF_TO_WINAF(HXSOCKET_AF af)
+{
+	int nWinAF = 0;
+	switch (af)
+	{
+	case HXSOCKET_AF_UNSPEC:
+		nWinAF = AF_UNSPEC;
+		break;
+	case HXSOCKET_AF_INET:
+		nWinAF = AF_INET;
+		break;
+	default:
+		break;
+	}
+	return nWinAF;
+}
+
+int HXWindowsSocketCommon::HXSOCKET_TYPE_TO_WINTYPE(HXSOCKET_TYPE type)
+{
+	int nWinType = 0;
+	switch (type)
+	{
+	case HXSOCKET_TYPE_STREAM:
+		nWinType = SOCK_STREAM;
+		break;
+	default:
+		break;
+	}
+	return nWinType;
+}
+
+int HXWindowsSocketCommon::HXSOCKET_PROTOCOL_TO_WINPROTOCOL(HXSOCKET_PROTOCOL protocol)
+{
+	int nWinProtocol = 0;
+	switch (protocol)
+	{
+	case HXSOCKET_PROTOCOL_ICMP:
+		nWinProtocol = IPPROTO_ICMP;
+		break;
+	case HXSOCKET_PROTOCOL_IGMP:
+		nWinProtocol = IPPROTO_IGMP;
+		break;
+	case HXSOCKET_PROTOCOL_RFCOMM:
+		//nWinProtocol = BTHPROTO_RFCOMM;
+		break;
+	case HXSOCKET_PROTOCOL_TCP:
+		nWinProtocol = IPPROTO_TCP;
+		break;
+	default:
+		break;
+	}
+	return nWinProtocol;
 }
 
 HXWinTcpClient::HXWinTcpClient()
@@ -230,13 +208,13 @@ HXWinTcpClient::~HXWinTcpClient()
 
 int HXWinTcpClient::Initialize(const std::wstring & strIP, int nPort)
 {
-	m_socket =  HXWindowsSocketCommon::Get()->GetSocket();
-	if (HX_OK == m_socket->Socket(HXSOCKET_AF_INET, HXSOCKET_TYPE_STREAM, HXSOCKET_PROTOCOL_TCP))
+	m_socketPtr =  HXWindowsSocketCommon::Get()->GetSocket();
+	if (HX_OK == m_socketPtr->Socket(HXSOCKET_AF_INET, HXSOCKET_TYPE_STREAM, HXSOCKET_PROTOCOL_TCP))
 	{
 		m_socketAddr.m_af = HXSOCKET_AF_INET;
 		m_socketAddr.m_shortPort = nPort;
 		m_socketAddr.m_strIP = strIP;
-		if (HX_OK == m_socket->Connect(m_socketAddr))
+		if (HX_OK == m_socketPtr->Connect(m_socketAddr))
 		{
 			return HX_OK;
 		}
@@ -247,13 +225,26 @@ int HXWinTcpClient::Initialize(const std::wstring & strIP, int nPort)
 
 int HXWinTcpClient::Send(IN char * sz, IN int nSize, IN int nFlags)
 {	
-	m_socket->Send(sz, nSize, nFlags);
-	return 0;
+	int nRet = m_socketPtr->Send(sz, nSize, nFlags);
+	return nRet == HX_OK ? HX_OK : nRet;
 }
 
-int HXWinTcpClient::Recv()
+int HXWinTcpClient::Recv(OUT char* sz, IN int nSize, IN int nFlags)
 {
-	/*::recv(m_);*/
-	return 0;
+	int nRet = m_socketPtr->Recv(sz, nSize, nFlags);
+	return nRet == HX_OK ? HX_OK : nRet;
 }
 
+HXWinTcpServer::HXWinTcpServer()
+{
+}
+
+HXWinTcpServer::~HXWinTcpServer()
+{
+}
+
+int HXWinTcpServer::Initialize(const std::wstring& strIP, int nPort)
+{
+	m_socketPtr = HXWindowsSocketCommon::Get()->GetSocket();
+	return 0;
+}

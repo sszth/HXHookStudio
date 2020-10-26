@@ -6,7 +6,7 @@
 
 #ifndef HXDECLARE_CLASS_INTERNAL_PTR(T)
 #define HXDECLARE_CLASS_INTERNAL_PTR(T)			\
-	typedef std::shared_ptr<T>	Ptr;
+	typedef std::shared_ptr<T>	T##tr;
 
 #endif // !HXDECLARE_CLASS_INTERNAL_PTR
 
@@ -112,9 +112,9 @@ enum HXSOCKET_TYPE
 // –≠“È
 enum HXSOCKET_PROTOCOL
 {
-	PROTOCOL_ICMP = 0,
-	PROTOCOL_IGMP = 1,
-	PROTOCOL_RFCOMM = 2,
+	HXSOCKET_PROTOCOL_ICMP = 0,
+	HXSOCKET_PROTOCOL_IGMP = 1,
+	HXSOCKET_PROTOCOL_RFCOMM = 2,
 	HXSOCKET_PROTOCOL_TCP = 3,
 };
 
@@ -124,7 +124,7 @@ struct HXSocketAddr
 	std::wstring m_strIP;
 	unsigned short m_shortPort;
 
-	HXSocketAddr() :m_af(HXSOCKET_AF_UNSPEC), m_shortPort(HXDEFAULT_PORT) {}
+	HXSocketAddr() :m_af(HXSOCKET_AF_UNSPEC), m_shortPort(-1) {}
 };
 
 

@@ -10,6 +10,8 @@ public:
 
 	virtual int Socket(IN HXSOCKET_AF af, IN HXSOCKET_TYPE type, IN HXSOCKET_PROTOCOL protocol) = 0;
 	virtual int Connect(IN const HXSocketAddr& hxAddr) = 0;
+	virtual int Recv(OUT char* szChar, OUT int nSize, IN int nFlags) = 0;
+	virtual int Bind(IN const HXSocketAddr& hxAddr) = 0;
 
 	//************************************
 	// Method:    Send
