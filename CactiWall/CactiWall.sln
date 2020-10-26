@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CactiWall", "CactiWall\CactiWall.vcproj", "{5B73F3A5-E31D-45E2-945A-C23C433FE81C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B73F3A5-E31D-45E2-945A-C23C433FE81C}.Debug|Win32.ActiveCfg = Release|Win32
+		{5B73F3A5-E31D-45E2-945A-C23C433FE81C}.Debug|Win32.Build.0 = Release|Win32
+		{5B73F3A5-E31D-45E2-945A-C23C433FE81C}.Release|Win32.ActiveCfg = Release|Win32
+		{5B73F3A5-E31D-45E2-945A-C23C433FE81C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

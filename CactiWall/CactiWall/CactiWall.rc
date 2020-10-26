@@ -1,0 +1,392 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\CactiWall.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\CactiWall.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CACTIWALL_DIALOG DIALOGEX 0, 0, 320, 200
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "CactiWall"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "退出",IDCANCEL,263,170,50,14
+    LTEXT           "进程联网控制",IDC_STATIC_PROCESSMONITOR,23,29,129,22,SS_CENTERIMAGE
+    LTEXT           "IP过滤",IDC_STATIC_IPMONITOR,23,57,122,22,SS_CENTERIMAGE
+    LTEXT           "DNS过滤",IDC_STATIC_DNSMONITOR,23,84,123,22,SS_CENTERIMAGE
+    PUSHBUTTON      "开启",IDC_BUTTON_START_PROCESS_MON,171,29,43,19
+    PUSHBUTTON      "关闭",IDC_BUTTON_STOP_PROCESS_MON,222,29,43,19
+    PUSHBUTTON      "开启",IDC_BUTTON_START_IP_MON,171,55,43,19
+    PUSHBUTTON      "关闭",IDC_BUTTON_STOP_IP_MON,222,55,43,19
+    PUSHBUTTON      "开启",IDC_BUTTON_START_DNS_MON,171,83,43,19
+    PUSHBUTTON      "关闭",IDC_BUTTON_STOP_DNS_MON,222,83,43,19
+    PUSHBUTTON      "开启监控",IDC_BUTTON_START_MON,15,114,98,29
+    PUSHBUTTON      "关闭监控",IDC_BUTTON_STOP_MON,173,115,98,29
+    PUSHBUTTON      "设置",IDC_BUTTON_PROCESSRULE_SETTING,270,29,43,19
+    PUSHBUTTON      "设置",IDC_BUTTON_IPRULE_SETTING,270,54,43,19
+    PUSHBUTTON      "设置",IDC_BUTTON_DNSRULE_SETTING,270,82,43,19
+END
+
+IDD_DIALOG_PROCESS_SETTING DIALOGEX 0, 0, 454, 290
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "进程规则设置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,397,248,50,14
+    PUSHBUTTON      "取消",IDCANCEL,397,269,50,14
+    CONTROL         "",IDC_RULE_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,7,425,206
+    PUSHBUTTON      "添加",IDC_BUTTON_ADDRULE,18,222,58,20
+    PUSHBUTTON      "编辑",IDC_BUTTON_EDITRULE,83,222,58,20
+    PUSHBUTTON      "删除",IDC_BUTTON_DELRULE,150,222,58,20
+    GROUPBOX        "列表之外程序联网",IDC_STATIC,18,248,95,28
+    CONTROL         "允许",IDC_RADIO_ALLOW,"Button",BS_AUTORADIOBUTTON | WS_GROUP,31,260,35,12
+    CONTROL         "禁止",IDC_RADIO_DENY,"Button",BS_AUTORADIOBUTTON,71,260,37,12
+END
+
+IDD_DIALOG_PROCESSRULE_ADD DIALOGEX 0, 0, 346, 183
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "添加程序"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,222,162,50,14
+    PUSHBUTTON      "取消",IDCANCEL,289,162,50,14
+    LTEXT           "程序路径",IDC_STATIC,18,17,47,14
+    EDITTEXT        IDC_EDIT_PROCESS_PATH,37,34,240,15,ES_AUTOHSCROLL | WS_GROUP,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "...",IDC_BUTTON_BROWSE,277,33,21,16
+    PUSHBUTTON      "浏览日志",IDC_BUTTON_BROWSELOGFILE,303,33,31,16
+    GROUPBOX        "访问控制",IDC_STATIC,17,57,262,38
+    CONTROL         "允许",IDC_RADIO_ALLOW,"Button",BS_AUTORADIOBUTTON,31,72,64,17
+    CONTROL         "禁止",IDC_RADIO_DENY,"Button",BS_AUTORADIOBUTTON,131,72,64,17
+END
+
+IDD_DIALOG_PROCESSLOG DIALOGEX 0, 0, 433, 229
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "进程联网日志"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,319,208,50,14
+    PUSHBUTTON      "取消",IDCANCEL,378,208,50,14
+    CONTROL         "",IDC_LIST_PROCESSLOG,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,17,421,180
+    LTEXT           "最近放行的程序",IDC_STATIC,7,7,134,10
+END
+
+IDD_DIALOG_IP_SETTING DIALOGEX 0, 0, 434, 276
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "IP规则设置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,377,239,50,14
+    PUSHBUTTON      "取消",IDCANCEL,377,257,50,14
+    CONTROL         "",IDC_RULE_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,416,199
+    PUSHBUTTON      "添加",IDC_BUTTON_ADDRULE,14,212,62,19
+    PUSHBUTTON      "编辑",IDC_BUTTON_EDITRULE,79,212,62,19
+    PUSHBUTTON      "删除",IDC_BUTTON_DELRULE,148,212,62,19
+    GROUPBOX        "其它IP联网控制",IDC_STATIC,15,236,196,28
+    CONTROL         "允许",IDC_RADIO_ALLOW,"Button",BS_AUTORADIOBUTTON,26,249,52,11
+    CONTROL         "禁止",IDC_RADIO_DENY,"Button",BS_AUTORADIOBUTTON,107,249,52,11
+END
+
+IDD_DIALOG_IPRULE_ADD DIALOGEX 0, 0, 387, 260
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "添加IP规则"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,265,239,50,14
+    PUSHBUTTON      "取消",IDCANCEL,330,239,50,14
+    CONTROL         "",IDC_IPADDRESS_LOCALADDR1,"SysIPAddress32",WS_TABSTOP,31,122,142,14
+    LTEXT           "规则名称",IDC_STATIC,20,20,42,13
+    EDITTEXT        IDC_EDIT_RULENAME,75,17,115,15,ES_AUTOHSCROLL
+    GROUPBOX        "IP数据包方向",IDC_STATIC,20,62,168,26
+    CONTROL         "任意",IDC_RADIO_ANYDIRECTION,"Button",BS_AUTORADIOBUTTON | WS_GROUP,33,71,47,10
+    CONTROL         "上行",IDC_RADIO_UPDIRECTION,"Button",BS_AUTORADIOBUTTON,83,71,47,10
+    CONTROL         "下行",IDC_RADIO_DOWNDIRECTION,"Button",BS_AUTORADIOBUTTON,129,71,47,10
+    GROUPBOX        "控制策略",IDC_STATIC,20,40,166,21
+    CONTROL         "允许",IDC_RADIO_ALLOW,"Button",BS_AUTORADIOBUTTON | WS_GROUP,83,45,44,11
+    CONTROL         "禁止",IDC_RADIO_DENY,"Button",BS_AUTORADIOBUTTON,129,45,44,11
+    GROUPBOX        "源IP",IDC_STATIC,19,94,171,73
+    CONTROL         "",IDC_IPADDRESS_LOCALADDR2,"SysIPAddress32",WS_TABSTOP,28,149,144,15
+    CONTROL         "任意",IDC_RADIO_LOCAL_ANYIP,"Button",BS_AUTORADIOBUTTON | WS_GROUP,30,105,47,10
+    CONTROL         "特定",IDC_RADIO_LOCAL_UNIQUEIP,"Button",BS_AUTORADIOBUTTON,83,105,47,10
+    CONTROL         "地址范围",IDC_RADIO_LOCAL_RANGEIP,"Button",BS_AUTORADIOBUTTON,129,105,47,10
+    LTEXT           "到",IDC_STATIC1,89,137,15,8
+    CONTROL         "",IDC_IPADDRESS_REMOTEADDR1,"SysIPAddress32",WS_TABSTOP,33,198,142,14
+    GROUPBOX        "目标IP",IDC_STATIC,21,170,171,73
+    CONTROL         "",IDC_IPADDRESS_REMOTEADDR2,"SysIPAddress32",WS_TABSTOP,30,225,144,15
+    CONTROL         "任意",IDC_RADIO_REMOTE_ANYIP,"Button",BS_AUTORADIOBUTTON | WS_GROUP,32,181,47,10
+    CONTROL         "特定",IDC_RADIO_REMOTE_UNIQUEIP,"Button",BS_AUTORADIOBUTTON,85,181,47,10
+    CONTROL         "地址范围",IDC_RADIO_REMOTE_RANGEIP,"Button",BS_AUTORADIOBUTTON,131,181,47,10
+    LTEXT           "到",IDC_STATIC2,91,213,15,8
+    GROUPBOX        "协议配置",IDC_STATIC,202,17,168,204
+    LTEXT           "协议类型",IDC_STATIC,207,37,41,13
+    COMBOBOX        IDC_COMBO_PROTOCOLTYPE,253,36,93,16,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "源端口",IDC_STATIC,202,54,171,44
+    CONTROL         "任意",IDC_RADIO_LOCAL_ANYPORT,"Button",BS_AUTORADIOBUTTON | WS_GROUP,213,65,47,10
+    CONTROL         "特定",IDC_RADIO_LOCAL_UNIQUEPORT,"Button",BS_AUTORADIOBUTTON,266,65,47,10
+    CONTROL         "地址范围",IDC_RADIO_LOCAL_RANGEPORT,"Button",BS_AUTORADIOBUTTON,312,65,47,10
+    EDITTEXT        IDC_EDIT_LOCALPORT1,219,79,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "到",IDC_STATIC3,275,79,15,8
+    EDITTEXT        IDC_EDIT_LOCALPORT2,304,79,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "目标端口",IDC_STATIC,200,100,171,44
+    CONTROL         "任意",IDC_RADIO_REMOTE_ANYPORT,"Button",BS_AUTORADIOBUTTON | WS_GROUP,211,111,47,10
+    CONTROL         "特定",IDC_RADIO_REMOTE_UNIQUEPORT,"Button",BS_AUTORADIOBUTTON,264,111,47,10
+    CONTROL         "地址范围",IDC_RADIO_REMOTE_RANGEPORT,"Button",BS_AUTORADIOBUTTON,310,111,47,10
+    EDITTEXT        IDC_EDIT_REMOTEPORT1,217,125,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "到",IDC_STATIC4,273,125,15,8
+    EDITTEXT        IDC_EDIT_REMOTEPORT2,302,125,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "ICMP类型",IDC_STATIC,208,158,58,15
+    LTEXT           "ICMP代码",IDC_STATIC,208,177,58,15
+    EDITTEXT        IDC_EDIT_ICMPCODE,257,174,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    COMBOBOX        IDC_COMBO_ICMPTYPE,259,156,58,12,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOG_DNS_SETTING DIALOGEX 0, 0, 431, 285
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "DNS规则设置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,374,246,50,14
+    PUSHBUTTON      "取消",IDCANCEL,374,264,50,14
+    CONTROL         "",IDC_RULE_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,417,204
+    PUSHBUTTON      "添加",IDC_BUTTON_ADDRULE,14,214,54,21
+    PUSHBUTTON      "编辑",IDC_BUTTON_EDITRULE,77,214,54,21
+    PUSHBUTTON      "删除",IDC_BUTTON_DELRULE,140,214,54,21
+    GROUPBOX        "其它DNS控制",IDC_STATIC,16,238,178,33
+    CONTROL         "允许",IDC_RADIO_ALLOW,"Button",BS_AUTORADIOBUTTON,29,251,60,12
+    CONTROL         "静止",IDC_RADIO_DENY,"Button",BS_AUTORADIOBUTTON,117,251,60,12
+END
+
+IDD_DIALOG_DNSRULE_ADD DIALOGEX 0, 0, 369, 197
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "添加DNS规则"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,249,176,50,14
+    PUSHBUTTON      "取消",IDCANCEL,312,176,50,14
+    LTEXT           "DNS过滤关键词",IDC_STATIC,17,17,60,12
+    EDITTEXT        IDC_EDIT1,56,34,241,15,ES_AUTOHSCROLL
+    GROUPBOX        "解析控制",IDC_STATIC,17,70,177,53
+    CONTROL         "允许",IDC_RADIO_ALLOW,"Button",BS_AUTORADIOBUTTON,29,95,60,15
+    CONTROL         "禁止",IDC_RADIO_DENY,"Button",BS_AUTORADIOBUTTON,115,94,60,15
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "CactiWall.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "CactiWall.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_CACTIWALL_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+
+    IDD_DIALOG_PROCESS_SETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 447
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 283
+    END
+
+    IDD_DIALOG_PROCESSRULE_ADD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 339
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_DIALOG_PROCESSLOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 428
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 222
+    END
+
+    IDD_DIALOG_IP_SETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 427
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 271
+    END
+
+    IDD_DIALOG_IPRULE_ADD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 380
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 253
+    END
+
+    IDD_DIALOG_DNS_SETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 424
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
+    END
+
+    IDD_DIALOG_DNSRULE_ADD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 362
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 190
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HTML
+//
+
+//IDR_HTML_DNSSETTINGDLG  HTML                    "DnsSettingDlg.htm"
+//IDR_HTML_DNSSETTINGDLG1 HTML                    "res\\html_dns.htm"
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\CactiWall.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "l.CHS\afxres.rc"      // 标准组件
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
+                                                                                                                                                                                                                                                                                                                                                     

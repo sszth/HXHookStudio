@@ -1,0 +1,22 @@
+
+
+386_OBJECTS=\
+ $(OBJ_PATH)\$O\init.obj \
+ $(OBJ_PATH)\$O\crc32.obj \
+ $(OBJ_PATH)\$O\common.obj \
+ $(OBJ_PATH)\$O\wall.obj \
+ $(OBJ_PATH)\$O\memtrace.obj \
+ $(OBJ_PATH)\$O\rules.obj \
+ $(OBJ_PATH)\$O\callouts.obj \
+
+
+
+
+
+# lowercased
+BASEDIR=c:\winddk\7600.16385.1
+OBJECT_ROOT=c:\winddk\7600.16385.1
+MAKEDIR_LOWERCASE=d:\firewall
+OBJ_PATH=d:\firewall
+CONCURRENT_MIDL=0
+CONCURRENT_MANIFEST_BUILD=0
