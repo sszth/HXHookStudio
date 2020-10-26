@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -23,7 +23,7 @@
     <ProjectGuid>{335F5D00-2CA8-4351-9BD8-76B6BC2BBFA0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>HXNetwork</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -151,7 +151,7 @@
     <ClInclude Include="HXNetworkManager.h" />
     <ClInclude Include="HXObjectServer.h" />
     <ClInclude Include="HXSocketFactory.h" />
-    <ClInclude Include="HXTcpClient.h" />
+    <ClInclude Include="HXSystemInfo.h" />
     <ClInclude Include="HXTcpSocket.h" />
     <ClInclude Include="HXWindowsSocketCommon.h" />
     <ClInclude Include="IHXSocket.h" />
@@ -164,7 +164,7 @@
     <ClCompile Include="HXNetworkManager.cpp" />
     <ClCompile Include="HXObjectServer.cpp" />
     <ClCompile Include="HXSocketFactory.cpp" />
-    <ClCompile Include="HXTcpClient.cpp" />
+    <ClCompile Include="HXSystemInfo.cpp" />
     <ClCompile Include="HXTcpSocket.cpp" />
     <ClCompile Include="HXWindowsSocketCommon.cpp" />
     <ClCompile Include="IHXSocket.cpp" />
